@@ -105,6 +105,6 @@ not to produce a generic solution.
 
 ## Notes
 
-- Marking an attempt the user made is not this skill's job — that belongs to a correction skill.
+- Marking an attempt the user made is not this skill's job — that's `correct-attempt`.
 - Mock exams made by `mock-exam` already come with their solutions; point the user there instead
   of solving them again.

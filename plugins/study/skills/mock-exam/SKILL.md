@@ -49,12 +49,16 @@ never promoted into the wiki.
    | Difficulty | same as the real papers, harder, easier | same |
    | Mode | **new** (new questions and variants) or **compilation** (real past questions from different years, assembled into one paper) | new |
    | How many | one, or several different mock exams | one |
+   | Focus | **exam weight**, or **weak spots** (from the progress record `correct-attempt` keeps) | exam weight |
 
 5. **Plan the paper and wait for a yes.**
    - **Structure**: the duration, materials allowed, number of questions and marks of the chosen
      sitting, taking the most recent years as the reference when the format changed.
    - **Topics**: drawn by exam weight and trend — every 🔥 topic in scope covered, some ⚠️,
      occasionally a 📎; recent trends weigh more than old papers. Stay inside the chosen scope.
+     With **weak spots** focus, read the course's progress record (`<progress>-<course>.md` in
+     the study folder) and follow its study priority instead: 🔴 topics first, then 🟡, still in
+     the real papers' format and marks. Without a record, say so and fall back to exam weight.
    - **Question kinds** in the same mix as the real papers (explain/compare/comment,
      calculation, trace an execution, write rules or code, draw…).
    - **Variety**: avoid variants already used in earlier mock exams of this course.

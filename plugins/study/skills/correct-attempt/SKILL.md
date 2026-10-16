@@ -1,0 +1,112 @@
+---
+name: correct-attempt
+description: Mark an attempt the user made at a mock exam, a past exam or an exercise sheet, inside a research knowledge base created by the knowledge-base skill — read their answers (photo, scan, PDF or typed), confirm unclear handwriting before marking, mark each question criterion by criterion against the best reference available (mock-exam solutions, the official solution, a solve-exam solution, or one made on the spot), as strictly as the course's teacher, classify every mistake, give an estimated grade on the course's scale, and keep a per-course progress record of weak spots (by topic, crossed with exam weight) that mock-exam and study-summary read. Use when the user wants an answer, an attempt or a practice exam marked, graded or checked, or asks about their weak spots or progress — e.g. "corrige o meu simulado", "vê se isto está certo", "quanto teria neste exame?", "corrige a minha resolução da ficha 3", "quais são os meus pontos fracos?", "mark my attempt".
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(find *), Bash(cp *), Bash(python *), Bash(py *), Bash(pandoc *), Bash(swipl *), Bash(winget install *), Bash(brew install *), Bash(sudo apt-get install *), Skill, AskUserQuestion
+---
+
+# Correct attempt
+
+Marks what the user wrote the way the exam would, explains every lost mark, and keeps a record
+of where they keep losing them. The record is about the student, not the subject, so it never
+goes into the wiki.
+
+## Ground rules
+
+- **Mark what was written, not what was meant.** Transcribe faithfully; when handwriting is
+  unclear, ask instead of guessing in either direction.
+- **As strict as the teacher.** Use the marking criteria of the reference and the teacher's style
+  in the exam map. Partial credit only where the criteria give it.
+- **The grade is an estimate**, always labelled as such, against a named reference.
+- **Ground every correction in the KB** — the reference, the wiki article, the slide. Verify
+  calculations and code by running them.
+- **`raw/` has no rules and is never written to.** Don't assume the KB is a git repository.
+- **Write in the KB's language**; technical terms stay as-is. The templates are in English —
+  translate their headings and labels (frontmatter keys and error kinds stay in English).
+
+## Steps
+
+1. **Find the knowledge base and the course** — same discovery as `exam-map`.
+
+2. **Get the attempt and the paper.** The attempt can be photos, a scan, a PDF or answers typed
+   in the chat. Work out which paper it answers — a mock exam from `mock-exam`, a past exam or an
+   exercise sheet in `raw/`, catalog questions — from what the user says or from the attempt
+   itself; ask if it's unclear. A partial attempt (some questions only) is fine: mark only what
+   was attempted, and record the rest as not attempted rather than as zero, unless the user says
+   it was done under exam conditions.
+
+3. **Transcribe.** Read every answer (images and PDFs with `Read`, the `pdf` skill for scans).
+   For handwriting, show the transcription of anything unclear — a word, a symbol, a number — and
+   wait for the user to confirm or correct it before marking.
+
+4. **Choose the reference**, the first that exists:
+   1. the mock exam's solutions (they carry marking criteria per question);
+   2. the official solution in `raw/` (the exams article marks it ✓);
+   3. a `solve-exam` solution of this paper in the study folder;
+   4. none: solve the paper first, the way `solve-exam` does (course material only, verified),
+      and say that the grade is less reliable because no official criteria exist.
+   Without explicit criteria, split each question's marks into criteria from the reference
+   answer before marking, and show that split in the assessment.
+
+5. **Mark each question, criterion by criterion**:
+   - marks scored out of possible, per criterion and per question;
+   - what's right; what's missing or wrong;
+   - **the kind of each mistake** — `concept`, `calculation`, `incomplete`, `misread`
+     (answered a different question), `notation`, `unanswered` (with a note when it looks like
+     time ran out);
+   - how to get it right, linking the wiki article and, when one exists, the study summary.
+   Recompute numbers and run code the user wrote (in a temporary file in the scratchpad, never
+   in `raw/` or the KB) to tell a wrong method from a slip.
+
+6. **Estimate the grade** on the scale the course's papers use (e.g. 0–20; the exam map's format
+   section says), from the weighted marks.
+
+7. **Show the result in the chat** — estimated grade, a line per question, the two or three
+   things to review first — then save it.
+
+8. **Save it where the KB says.** Look up the study purpose folder in `KB_GUIDE.md`/
+   `outputs/README.md`; everything about the student's attempts lives in one folder per course:
+   ```
+   outputs/<area>/<study>/<progress>-<course>/
+   ├── <progress>-<course>.md
+   └── <attempts>/
+       ├── NN-<paper>.md / .docx / .pdf
+       └── NN-<paper>-original.<ext>
+   ```
+   with the names in the KB's language (e.g. `progresso-engcia/tentativas/01-simulado-1.pdf`).
+   `NN` is the next attempt number for the course (01, 02, …); `<paper>` a short slug of what was
+   attempted. Write the assessment following `templates/assessment.md` — its frontmatter records
+   each question's topic, marks, score and mistake kinds, which is what the progress record is
+   built from. Copy the user's original files next to it as `NN-<paper>-original.<ext>` (only
+   files they gave you; never anything from `raw/`).
+   Render the assessment with `python <plugin>/scripts/render.py <file.md>` (pandoc checked as in
+   `study-summary` step 2 — ask before installing it; without it keep only the `.md`).
+
+9. **Rebuild the progress record** `<progress>-<course>.md` from the frontmatter of every
+   assessment in `<attempts>/` — rebuilt, not patched, so it can't drift — following
+   `templates/progress.md`:
+   - **by topic**: scored/possible summed over all attempts, the percentage, the per-attempt
+     percentage of the last three, the state — 🔴 below 50%, 🟡 50–75%, 🟢 75% or more, ⚪ fewer
+     than two attempts on the topic — and the recurring mistake kinds;
+   - **study priority**: weakness crossed with the topic's exam band and weight from the exams
+     article (🔴 and 🔥 first; a 🟢 topic drops out however heavy it is);
+   - **most frequent mistakes**, by kind, with their topics;
+   - **attempts**: number, date, paper, estimated grade, link.
+   The record isn't rendered to PDF. Add or update its single row in the index table of
+   `outputs/README.md`.
+
+10. **Report**: the estimated grade, what to review first (from the study priority), and a next
+    step — e.g. a mock exam focused on weak spots (`mock-exam`), or the summary sections of the 🔴
+    topics.
+
+## Questions about progress
+
+"Quais são os meus pontos fracos?" or "como estou a ENGCIA?" — read the progress record and
+answer from it in the chat; don't mark anything. If there's no record yet, say so and suggest
+marking an attempt first.
+
+## Notes
+
+- Never promote anything from here into the wiki. A mistake that reveals the wiki explains
+  something badly or not at all is worth a note — offer to capture it.
+- An attempt at the same paper again is a new attempt with its own number; the record shows the
+  progression.

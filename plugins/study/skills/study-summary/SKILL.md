@@ -43,7 +43,8 @@ actually ask, in a Word document and a PDF. It's a view of the knowledge base ma
 
 3. **Agree the scope and the level.** Use what the user said; ask only for what's missing:
    - **Scope** — the whole course, a block (a wiki sub-folder such as "2. Programação com
-     Restrições") or a list of topics (wiki articles).
+     Restrições"), a list of topics (wiki articles), or **my weak spots** — the 🔴 and 🟡 topics
+     of the course's progress record, in its study-priority order.
    - **Level** — `complete` (default: everything the course covers, at exam depth) or
      `condensed` (for last-minute revision: definitions, formulas, methods and the exam box, no
      long examples).
@@ -58,6 +59,10 @@ actually ask, in a Word document and a PDF. It's a view of the knowledge base ma
      `exam-map`): each topic's ranking, number of exams and weight, and the real questions. If
      there is no exam map, say so and offer to run `exam-map` first; if the user prefers to go on
      without it, write the summary without weights and say so on its quick map.
+   - **The progress record**, if `correct-attempt` has started one for the course
+     (`<progress>-<course>.md` in the study folder): the user's state per topic (🔴/🟡/🟢) and
+     their recurring mistakes, so the quick map can show it and each topic's common mistakes can
+     include the ones they actually make.
    - **Notes** — only `kind: message` notes that say something about the assessment (e.g. what a
      teacher said would come up), attributed to who said it.
 
@@ -72,7 +77,8 @@ actually ask, in a Word document and a PDF. It's a view of the knowledge base ma
 
 6. **Write the source** following `templates/summary.md`:
    - **Cover** (pandoc title block from the frontmatter): course, scope, "version N — date".
-   - **Quick map** — topic, exams, weight, band; the band rule in one line.
+   - **Quick map** — topic, exams, weight, band; the band rule in one line. With a progress
+     record, add a column with the user's state per topic.
    - **One section per topic**, in course order, with its band in the heading and "comes up in X
      of N exams, about Y% of the grade" under it, then: concepts and definitions; formulas and
      rules (LaTeX `$…$`/`$$…$$` — pandoc turns them into Word equations); the method step by
