@@ -1,7 +1,7 @@
 ---
 name: compile-wiki
 description: Compile/update the markdown wiki/ of a knowledge base created by the knowledge-base skill — research mode (summarize raw/ sources into concept articles) or code mode (fold notes/, git commits, GitHub issues, and pull requests into decision/subsystem articles, plus regenerate an always-current wiki/Estrutura.md project structure and domain-model overview). Cross-links articles and keeps wiki/index.md current. Use when the user wants to compile, refresh, sync, or update their wiki, process newly added sources/notes, or asks to "run the ingest".
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(find *), Bash(git log *), Bash(git show *), Bash(git rev-parse *), Bash(gh repo view *), Bash(gh issue list *), Bash(gh pr list *), AskUserQuestion
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(find *), Bash(mkdir *), Bash(mv *), Bash(git log *), Bash(git show *), Bash(git rev-parse *), Bash(gh repo view *), Bash(gh issue list *), Bash(gh pr list *), AskUserQuestion
 ---
 
 # Compile wiki
@@ -61,21 +61,36 @@ c. For each pending source:
      feeds, today's date.
 
 d. **Process pending notes** (skip if there's no `notes/` folder). Notes are the user's own
-   thoughts, not external sources, so they aren't tracked in `wiki/sources.md`. Glob
-   `notes/*.md`; a note is *pending* if its frontmatter is missing or doesn't say
-   `status: compiled`. For each pending note:
+   material and what other people told them, not external sources, so they aren't tracked in
+   `wiki/sources.md`. Pending notes are the loose files at the top of `notes/` (glob
+   `notes/*.md`, not recursive, skipping `README.md`) whose frontmatter is missing or doesn't
+   say `status: compiled`. Subfolders of `notes/` are the archive — never reprocess them. For
+   each pending note:
    - Read it and fold it into the concept article it relates to (or a new one). If its
-     frontmatter has `source:`, attach it to the article covering that `raw/` file. Mark it as
-     the author's own view rather than something the sources say (e.g. a "Notas pessoais"
-     section, or an inline "(nota minha)"). Cite it with `[nota](../notes/<file>.md)`.
-   - Respect `kind:` — `thought` (default) is the author's view; `question` goes under open
-     questions for that concept; `ai-response` is **unverified**: attribute it to `from:` (e.g.
-     "segundo o ChatGPT") and never state it as fact unless a `raw/` source backs it up, in which
-     case cite that source.
+     frontmatter has `source:`, attach it to the article covering that `raw/` file. Prefer
+     extending what the article says over adding a parallel section that repeats it.
+   - Respect `kind:`:
+     - `thought` (default) and `decision` are the author's view — mark them as such, apart
+       from what the sources say (e.g. a "Notas pessoais"/"Decisões" section, or an inline
+       "(nota minha)").
+     - `message` is someone else's word: attribute it to `from:` (e.g. "segundo o perito"),
+       neither as the author's view nor as something a `raw/` source states.
+     - `ai-response` is **unverified**: attribute it to `from:` (e.g. "segundo o ChatGPT") and
+       never state it as fact unless a `raw/` source backs it up, in which case cite that source.
+     - `question` goes under the open questions of that concept.
    - Write in the KB's `language` (or the note's own, if `language` isn't set); technical terms
      stay as-is.
    - Rewrite the note's frontmatter to `status: compiled`, `compiled: <today's date>`, and
-     `articles:` listing what it fed. Leave the body untouched.
+     `articles:` listing what it fed (keep `kind`, `from` and `source`). Leave the body untouched.
+   - **Archive it**: move the file to `notes/<area>/`, where `<area>` is the wiki area folder of
+     the main article it fed (`general/` — in the KB's language — if it fits no area;
+     `notes/compiled/` if the wiki has no area folders at all). Create the folder if needed.
+     Cite the note from the wiki by its archived path, e.g. `[nota](../../notes/<area>/<file>.md)`
+     (relative to the article).
+   - **Older KBs**: notes at the top of `notes/` that already say `status: compiled` were
+     compiled before archiving existed. Don't reprocess them; list them in the report and offer
+     to move each to its area (from its `articles:`), fixing the wiki links that cite it — only
+     on a yes.
 
 ### Code mode
 
@@ -94,16 +109,22 @@ a. **Regenerate the structure overview.** Rewrite `wiki/Estrutura.md` from scrat
      section out entirely if `domain_model` is empty — don't invent one.
    - Make sure `wiki/index.md` links `Estrutura.md` first, as the "start here" entry.
 
-b. **Process pending notes.** Glob `notes/*.md`. A note is *pending* if its frontmatter is
-   missing or doesn't say `status: compiled`. For each pending note:
+b. **Process pending notes.** Same inbox rule as research mode: glob `notes/*.md` at the top
+   level only (skip `README.md`); a note there is *pending* if its frontmatter is missing or
+   doesn't say `status: compiled`. Subfolders are the archive. For each pending note:
    - Read it. Decide which existing wiki article (by decision/subsystem) it belongs to, or
      whether it warrants a new one.
    - Write or update that article: synthesize the note's content into it, don't paste it
      verbatim. Cross-link related articles with `[[Article Name]]` (link into `wiki/_geral/`
      when the concept already lives there). Write in the language the note itself is written in
      (same rule as research mode) — technical terms stay as-is.
+   - A `kind: decision` note (e.g. from `adr-new`) feeds the article for that decision or
+     subsystem as a recorded decision, with its context and consequences.
    - Rewrite the note's frontmatter to `status: compiled`, `compiled: <today's date>`, and
      `articles:` listing what it fed. Leave the note's body untouched.
+   - Archive it exactly as in research mode (`notes/<area>/`, or `notes/compiled/` when the
+     wiki has no area folders), citing it by its archived path; same handling for older notes
+     already compiled at the top level.
 
 c. **Walk repo activity since the last compile.** Read `last_compiled_at` from `KB_GUIDE.md`'s
    frontmatter.
@@ -186,7 +207,13 @@ e. **Code mode extra:** `wiki/Estrutura.md` is regenerated every run so it alrea
 - No RAG/vector DB needed at small-to-medium scale: the index files plus direct reads of
   relevant articles are enough context to work from.
 - Never edit files inside `raw/` (research mode) — it's the append-only source of truth. In
-  both modes, never rewrite a note's body, only its frontmatter status.
+  both modes, never rewrite a note's body — only its frontmatter, and move it to its archive
+  folder once compiled.
+- The wiki is the single source of truth. Never replace an article's content with a pointer to
+  something in `outputs/` ("the analysis is in outputs/…") — if it's knowledge, it goes in the
+  article. Outputs may link to the wiki, not stand in for it.
+- Never assume a research-mode KB is a git repository: nothing in research mode reads or
+  writes git. Only code mode walks git history, because it lives inside a code repo.
 - Never write into `wiki/_geral/` — it's a directory link into a general vault maintained by its
   own `compile-wiki` run. Read and link to it, don't edit through it.
 - `gh` is optional for code mode: if it's not installed/authenticated or there's no GitHub

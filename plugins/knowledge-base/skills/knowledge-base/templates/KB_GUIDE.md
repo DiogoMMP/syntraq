@@ -7,53 +7,55 @@ created: {{DATE}}
 
 # Knowledge Base guide — {{TOPIC}}
 
-Conventions for any LLM session working in this directory. Adapted from Andrej Karpathy's
-["LLM Knowledge Bases"](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
+Conventions for any LLM session working in this directory. Adapted from Andrej Karpathy's ["LLM Knowledge Bases"](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
 
 ## Layout
 
-- `raw/` — source material (articles, papers, repos, datasets, images). Read-only; never
-  edited by the LLM.
-- `notes/` — your own notes (thoughts, questions, answers from other AIs), one file per note
-  with `status: pending`/`compiled` frontmatter and optional `kind`, `source`, `from`.
-  `compile-wiki` folds them into `wiki/` as your view (AI answers as unverified, attributed),
-  distinct from what `raw/` says. Never rewritten by the LLM beyond that frontmatter.
-- `wiki/` — the compiled knowledge base: `.md` files with backlinks, organized by concept.
-  LLM-maintained; humans mostly just read it (e.g. in Obsidian).
-- `outputs/` — one-off generated artifacts (Q&A answers, Marp slides, charts). Promote the
-  useful ones into `wiki/`. Organised by the same areas as `wiki/` (one folder per course,
-  project or topic; `geral/` for the rest), and indexed in a table in `outputs/README.md`.
-  The folder structure is not fixed: check it before adding anything, and reorganise it when
-  it gets ambiguous.
+```
+raw/                      source material, any structure
+notes/
+├── *.md                  pending notes (the inbox)
+└── <area>/*.md           compiled notes, moved here by compile-wiki
+wiki/<area>/…             the compiled knowledge — the single source of truth
+outputs/<area>/
+├── study/                study material: summaries, mock exams, solved exams (printable)
+├── deliverables/         things that go to other people: posts, emails, scripts, slides
+├── answers/              one-off answers to a question
+└── work/<name>/          work that evolves in versions: README.md + v1/, v2/, …
+tools/                    scripts that operate on raw/ and wiki/
+```
+
+- `raw/` — source material (slides, PDFs, books, exams, articles, repos, datasets, images). **It has no rules**: whatever folders and file names it already has are the structure. Never edited by the LLM, never reorganised, never required to follow a convention — skills discover what each file is from its path, name and content, and ask when it's unclear.
+- `notes/` — your own material and what other people tell you, one file per note (see `notes/README.md`). Pending notes sit loose at the top of `notes/`; once `compile-wiki` folds one into the wiki it moves it to `notes/<area>/`, so what is still pending is visible at a glance.
+- `wiki/` — the compiled knowledge base: `.md` files with backlinks, organised by area and concept. LLM-maintained; humans mostly just read it (e.g. in Obsidian).
+- `outputs/` — artifacts generated from the KB for a purpose (see `outputs/README.md`), in the same areas as `wiki/`, split by what they are for.
 - `tools/` — scripts/CLIs that operate on `raw/` and `wiki/` (search, linting, importers).
+
+The areas (a course, a project, a topic) are the same in `wiki/`, `notes/` and `outputs/` — one taxonomy, not three. `general/` holds what fits no area. Folders are created when the first file needs them, never in advance.
+
+The names of the four purpose folders (and of `general/`) are written in the KB's language; the tree above is the reference any skill uses to find them.
+
+Nothing here assumes the folder is a git repository. Versions of a piece of work are kept as folders (`v1/`, `v2/`, …) with a changelog in that work's `README.md`.
 
 ## Workflow
 
-1. **Ingest** — new source material goes into `raw/` as-is (web clips, PDFs, repos, datasets,
-   images). Don't summarize or rewrite it on the way in.
-2. **Compile** — incrementally turn `raw/` and pending `notes/` into `wiki/`: write/update summaries, extract
-   concepts into their own articles, cross-link related articles, keep `wiki/index.md` current
-   as a map of content. This is incremental — re-run it as `raw/` grows, don't start from
-   scratch each time.
-3. **Q&A** — answer questions against the wiki by reading `wiki/index.md` plus whatever
-   articles are relevant; fall back to `raw/` or a live search when the wiki doesn't have the
-   answer yet. No need for a vector DB at small-to-medium scale — index files + direct reads are
-   enough.
-4. **Output** — render answers as markdown, Marp slide decks, or images (e.g. matplotlib) into
-   `outputs/` rather than only replying in chat, so results are viewable in Obsidian and
-   reusable later. File genuinely useful outputs back into `wiki/`. Put each output in the
-   folder of the area it belongs to and add a row to the table in `outputs/README.md` (see
-   there for the rules). Look at the current structure first; if it has become ambiguous,
-   reorganise it and update the table.
-5. **Lint** — periodically sweep `wiki/` for inconsistencies, missing data (impute via web
-   search where appropriate), and interesting new connections worth turning into their own
-   article. Treat this as ongoing maintenance, not a one-time cleanup.
-6. **Tools** — build small scripts in `tools/` as needed (e.g. a search CLI over `wiki/`) and
-   prefer using them over ad-hoc re-reading of every file once the wiki gets large.
+1. **Ingest** — new source material goes into `raw/` as-is. Don't summarise or rewrite it on the way in.
+2. **Note** — your thoughts, decisions, questions, answers from other AIs and messages from other people (a teacher, an expert, a colleague) go into `notes/` as one file each, with a small frontmatter (`kind`, `from`, `source`).
+3. **Compile** — `compile-wiki` incrementally turns new `raw/` files and pending `notes/` into `wiki/` articles, cross-links them, keeps `wiki/index.md` and `wiki/sources.md` current, and archives each processed note into `notes/<area>/`.
+4. **Q&A** — answer questions against the wiki: `wiki/index.md` plus the relevant articles; fall back to `raw/` or a live search when the wiki doesn't have the answer yet.
+5. **Output** — anything produced for a purpose goes into `outputs/<area>/<purpose>/` and gets one row in the index table in `outputs/README.md`.
+6. **Lint** — `wiki-lint` periodically sweeps for broken links, orphans, notes in the wrong place, outputs out of place and content duplicated between `outputs/` and `wiki/`.
+
+## The wiki is the single source of truth
+
+- **Knowledge goes in the wiki, and only there.** If something is durably true about an area (what a topic is, how an exam is structured, a decision that was taken), it belongs in a wiki article — not in an output that the wiki then points to.
+- **Outputs never restate the wiki.** An output is a view of the wiki made for a purpose (to print, to send, to answer one question). It links to the articles it is based on instead of copying them.
+- **Promoting an output** means folding into the wiki only what the wiki doesn't already say (a new fact, a worked example, a clarification) — never pasting the output whole. Then mark the output `promoted → [[Article]]` in the index.
+- The wiki never says "see this output for the details" as a substitute for having the details.
 
 ## Ground rules
 
 - The wiki is written and maintained by the LLM. Humans view it, they don't hand-edit it.
 - Keep `wiki/index.md` accurate — it's the entry point for every future session.
-- When in doubt about whether something belongs in `wiki/` vs `outputs/`: durable knowledge →
-  `wiki/`; one-off answer to a specific question → `outputs/` (and maybe later promoted).
+- Never write into `raw/`. Never rewrite the body of a note — `compile-wiki` only updates its frontmatter and moves it to its area.
+- Versions in `outputs/<area>/work/<name>/vN/` are frozen once a newer version exists: start a new `vN/` folder instead of editing an old one.

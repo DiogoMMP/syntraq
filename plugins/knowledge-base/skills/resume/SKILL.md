@@ -21,9 +21,11 @@ base or the repo — this is purely a summary.
 3. **Gather recent activity**, branching on mode:
 
    **Code mode:**
-   - Pending notes in `notes/` (files without `status: compiled`) — these are unfinished
-     thoughts from last time, likely the most useful signal of "what I was in the middle of".
-   - The last few *compiled* notes (by `compiled:` date) for recent context.
+   - Pending notes at the top level of `notes/` (files without `status: compiled`; its
+     subfolders are the archive) — these are unfinished thoughts from last time, likely the
+     most useful signal of "what I was in the middle of".
+   - The last few *compiled* notes (by `compiled:` date, in the archive subfolders) for recent
+     context.
    - `git log --oneline -20` (or since `last_compiled_at` if that's more recent) for recent
      commits.
    - `git status --short` and `git diff --stat` for anything uncommitted — this is often
@@ -33,8 +35,11 @@ base or the repo — this is purely a summary.
    - The most recent rows in `wiki/sources.md` (by date) for what was last ingested.
    - Any files in `raw/` with no corresponding entry in `wiki/sources.md` — unfinished ingest
      work.
-   - Pending notes in `notes/` (files without `status: compiled`), noting any `kind: question`
-     ones as open questions, plus the last few compiled notes for context.
+   - Pending notes at the top level of `notes/` (files without `status: compiled`; its
+     subfolders are the archive), noting any `kind: question` ones as open questions and any
+     `kind: message` ones as replies still to fold in, plus the last few compiled notes for
+     context.
+   - No git: a research KB is not assumed to be a repository.
 
 4. **Write the briefing** directly in the response (not to a file): a short paragraph on what
    the project is (from `wiki/index.md` / `Estrutura.md`), then bullet points for open threads

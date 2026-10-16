@@ -7,7 +7,7 @@ This directory is a knowledge base. Before answering anything about {{TOPIC}}, u
 
 1. **Start with the wiki.** Read `wiki/index.md`, then the articles it points to that are relevant. The wiki is the compiled, cross-linked view of the sources — it's the default place to answer from.
 2. **Go to `raw/` only when the wiki isn't enough**: you need the exact wording, a figure, a table, an image, or detail the wiki summarised away. Use `wiki/sources.md` to find which raw file backs an article. Never edit anything in `raw/`.
-3. `notes/` holds the author's own thoughts and AI answers they saved. They are the author's view, not a source — AI-authored notes are unverified.
+3. `notes/` holds the author's own thoughts and decisions, AI answers they saved, and messages from other people (`kind: message`, with `from:`). None of them is a source: thoughts are the author's view, messages are attributed to whoever wrote them, and AI-authored notes are unverified.
 
 ### Don't invent
 
@@ -21,5 +21,9 @@ Write every `.md` file with **no hard line breaks inside a sentence or paragraph
 
 ### Maintenance
 
-The wiki is maintained by the `compile-wiki` skill, not by hand. Don't edit `wiki/` to answer a one-off question — put one-off answers in `outputs/`, in the folder of the area they belong to (same areas as `wiki/`), and add a row to the index table in `outputs/README.md`, including what it is based on. The structure of `outputs/` is not fixed: look at it before adding anything, and reorganise it (updating the table) when it becomes ambiguous.
+The wiki is maintained by the `compile-wiki` skill, not by hand, and it is the single source of truth: durable knowledge goes only there. Something worth keeping goes into `notes/` as a new note, for `compile-wiki` to fold in.
+
+Anything produced for a purpose goes in `outputs/<area>/` (same areas as `wiki/`), in the folder for what it is for: study material, deliverables for other people, one-off answers, or versioned work (see `outputs/README.md`). Outputs link to the wiki articles they are based on instead of repeating them, and say what they are based on in their own frontmatter. Add one short row to the index table in `outputs/README.md` for each.
+
+Don't assume this folder is a git repository. Never write into `raw/`, and don't expect it to follow any folder or naming convention.
 <!-- kb:end -->

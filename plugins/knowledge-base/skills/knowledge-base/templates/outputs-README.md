@@ -1,42 +1,58 @@
 # outputs/
 
-Ad-hoc artifacts generated while querying the knowledge base: Q&A answers, Marp slide decks,
-matplotlib/chart images, one-off reports.
-
-When an output turns out to be durably useful, "file it back" into `../wiki/` (as its own
-article or folded into an existing one) instead of leaving it stranded here.
+Artifacts generated from the knowledge base for a purpose: something to print, to send, to answer one question, or a piece of work that evolves in versions. Durable knowledge does not live here — it lives in `../wiki/`.
 
 ## Where things go
 
-**This structure is not fixed.** Before putting anything here, look at what `outputs/` and
-`../wiki/` (and `../raw/`) look like *right now* and decide where it fits. Whenever a folder
-starts to get ambiguous — mixed content, too many loose files, an unclear home for the next
-output — **reorganise it** (move the files, fix the index table, tell the user) instead of
-adding to the pile.
+```
+outputs/<area>/
+├── study/          study material: summaries, mock exams, solved exams — printable (.docx/.pdf), with the .md source next to it
+├── deliverables/   things that go to other people: blog posts, emails, presentation scripts, slides, embeds
+├── answers/        one-off answers to a specific question
+└── work/<name>/    work that evolves in versions
+    ├── README.md   what it is, current version, short changelog (one line per version)
+    └── v1/ v2/ …   one self-contained folder per version
+```
 
-Starting guidelines:
-
-- Organise by **context, mirroring the areas `../wiki/` already uses** (a course, a project, a
-  topic) — one taxonomy, not two. Don't invent a grouping the sources don't have.
-- An output lives in the folder of the area it came from, e.g. `outputs/<area>/`.
-- When an area has its own sub-divisions in `../wiki/` or `../raw/` (a challenge, a module, a
-  phase), mirror them one level down: `outputs/<area>/<sub-area>/`.
-- A set of files that belong together (a script + the diagram it generates + its data) gets its
-  own subfolder. Don't scatter it by file type.
-- Something that fits no area goes in `outputs/geral/`.
-- If the wiki has no areas (a single-topic KB), keep `outputs/` flat.
-- Past two levels is a sign to promote the good outputs into `wiki/`, not to nest deeper.
-- Name new files `YYYY-MM-DD-slug.<ext>` so they sort by date.
+- `<area>` is one of the areas `../wiki/` already uses (a course, a project, a topic). Don't invent a grouping the wiki doesn't have. What fits no area goes in `general/`. If the wiki has no areas, drop the `<area>/` level.
+- Pick the purpose folder by what the output is **for**, not by its file type. The type (summary, chart, email, slides…) is a column in the index, not a folder.
+- Inside `study/`, `deliverables/` and `answers/`, name files `YYYY-MM-DD-slug.<ext>`. A set of files that belong together (a script + the image it generates) gets its own `YYYY-MM-DD-slug/` subfolder.
+- In `work/<name>/`, each version is a frozen folder: once `v3/` exists, `v2/` is not edited. The changelog lives in `work/<name>/README.md`, not in the index below.
 - Create folders when the first output needs them — don't pre-create empty ones.
+
+## Outputs never repeat the wiki
+
+- An output is a view of the wiki made for a purpose. It links to the articles it is based on instead of copying them.
+- If producing an output uncovers something durably true that the wiki doesn't say yet, put that in the wiki (through a note or `compile-wiki`), and keep only the purpose-specific part here.
+- Promoting an output means folding into the wiki **only what is new** — then set its status to `promoted → [[Article]]`.
+
+## What each output is based on
+
+Not in the index — in the output itself:
+
+- `.md` outputs start with a frontmatter block:
+
+  ```markdown
+  ---
+  date: 2026-10-15
+  type: summary
+  based_on:
+    - "[[Some Article]]"
+    - raw/some/file.pdf
+  status: draft
+  ---
+  ```
+
+  Use `outside the KB` in `based_on` for anything that comes from general knowledge or a web search.
+- A `.docx`/`.pdf` is generated from a `.md` source next to it, which carries that frontmatter.
+- Anything else (an image, an HTML embed, a script) goes in its own subfolder with a short `README.md` carrying the same fields.
 
 ## Index
 
-Every output gets a row here, added by whoever generates it, and kept in sync whenever files
-are moved. The type (slides, chart, answer, report…) is a column, not a folder.
+One row per output, added by whoever creates it and kept in sync when files move. A `work/<name>/` is one row pointing at its folder, updated when a new version is added.
 
-| Date | File | Type | Question / goal | Based on | Status |
-| --- | --- | --- | --- | --- | --- |
+- **What for** — one short sentence. Details go in the output itself.
+- **Status** — `draft`, `final` or `promoted → [[Article]]`.
 
-- **Based on** — the wiki articles and/or `raw/` files that back it, or `fora da KB` /
-  `outside the KB` when it comes from general knowledge or a web search.
-- **Status** — `one-off`, or `promoted → wiki/<article>.md` once filed back.
+| Date | File | Type | What for | Status |
+| --- | --- | --- | --- | --- |

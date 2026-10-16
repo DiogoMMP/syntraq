@@ -23,7 +23,9 @@ and pull requests.
     domain model if any). Fully regenerated on every `compile-wiki` run, unlike the rest of the
     wiki which only accumulates what's new.
 - `notes/` — one file per scratch note, each with a `status: pending`/`status: compiled`
-  frontmatter marker (see `notes/README.md`). Drop thoughts here as you work.
+  frontmatter marker (see `notes/README.md`). Drop thoughts here as you work: loose files at
+  the top of `notes/` are pending, and `compile-wiki` moves each one into an archive folder
+  (`notes/<area>/`, or `notes/compiled/` when the wiki has no areas) once it's folded in.
 
 ## Workflow
 
@@ -43,7 +45,7 @@ and pull requests.
 
 - The wiki is written and maintained by the LLM. You view it, you don't hand-edit it.
 - Keep `wiki/index.md` accurate — it's the entry point for every future session.
-- A note is done once `compile-wiki` marks it `status: compiled` — leave the file in place as a
-  record, don't delete it.
+- A note is done once `compile-wiki` marks it `status: compiled` and moves it to its archive
+  folder — keep it there as a record, don't delete it.
 - `wiki/Estrutura.md` reflects the project *right now* — don't hand-edit it either, it gets
   overwritten on the next compile.

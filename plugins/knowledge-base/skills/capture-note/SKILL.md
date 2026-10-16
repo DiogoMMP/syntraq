@@ -19,7 +19,7 @@ reactions alongside `raw/`).
 
 2. **Ensure `notes/` exists.** If it doesn't, create it with a short `README.md` explaining the
    convention (a `status: pending`/`status: compiled` frontmatter marker per note, as described
-   below).
+   below, and that compiled notes are moved into archive subfolders).
 
 3. **Get the note's content.**
    - If invoked with arguments (`$ARGUMENTS`), use that text directly.
@@ -39,13 +39,24 @@ reactions alongside `raw/`).
    <the note content, lightly cleaned up but not rewritten>
    ```
 
-   **Research-mode KBs** (`mode: research` in `KB_GUIDE.md`) take three optional extra fields,
-   added only when they're evident from what the user said — don't ask for them:
-   `kind:` (`thought` by default; `ai-response` when the text is pasted from an AI;
-   `question` for something still open), `source:` (the `raw/` file it's about) and `from:`
-   (which AI, for `ai-response`). Paste AI answers verbatim rather than "cleaning them up". If
+   Always write it at the top level of `notes/` — that's the inbox. Subfolders of `notes/` are
+   the archive of compiled notes; never write a new note into one.
+
+   Add an optional `kind:` when it's evident from what the user said — don't ask for it:
+   `thought` (the default, left out), `decision` when they're recording something decided
+   ("decidimos X por causa de Y"), `question` for something still open.
+
+   **Research-mode KBs** (`mode: research` in `KB_GUIDE.md`) also have two more kinds and two
+   more fields, again only when evident:
+   - `kind: ai-response` when the text is pasted from an AI, with `from:` naming which AI.
+   - `kind: message` when it's something another person sent or said — a teacher, an expert,
+     a colleague ("o perito respondeu…", "o professor disse…"), with `from:` naming who (a
+     role is enough, e.g. `from: perito`).
+   - `source:` — the `raw/` file it's about.
+   Paste AI answers and other people's messages verbatim rather than "cleaning them up". If
    `notes/` has to be created in a research KB, use the wording of
-   `knowledge-base/templates/research-notes-README.md` for its `README.md`.
+   `knowledge-base/templates/research-notes-README.md` for its `README.md` (in the KB's
+   language).
 
 5. **Confirm** with one line — the note's filename and a note that `compile-wiki` will fold it
    into the wiki later. Don't over-narrate; this should feel instant.

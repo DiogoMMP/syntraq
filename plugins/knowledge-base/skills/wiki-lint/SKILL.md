@@ -1,7 +1,7 @@
 ---
 name: wiki-lint
 description: Health-check the compiled wiki/ of a knowledge base — broken internal links, articles orphaned from wiki/index.md, stale references to files/decisions that no longer exist, and dangling manifest entries. Reports findings and asks before fixing anything. Use when the user wants to lint, clean up, audit, or check the health/consistency of their wiki.
-allowed-tools: Read, Grep, Glob, Edit, Write, AskUserQuestion
+allowed-tools: Read, Grep, Glob, Edit, Write, Bash(mkdir *), Bash(mv *), AskUserQuestion
 ---
 
 # Wiki lint
@@ -30,34 +30,61 @@ Reports first, fixes only what the user approves.
 4. **Check for dangling manifest entries.**
    - Research mode: rows in `wiki/sources.md` whose listed article(s) no longer exist, or whose
      source file is gone from `raw/`.
-   - Both modes: notes in `notes/` marked `status: compiled` whose listed `articles:` no longer
-     exist, and (research mode) notes whose `source:` points to a `raw/` file that doesn't exist.
+   - Both modes: compiled notes whose listed `articles:` no longer exist, and (research mode)
+     notes whose `source:` points to a `raw/` file that doesn't exist.
 
-   - Research mode: files under `outputs/` with no row in the table in `outputs/README.md`, and
-     rows pointing to a file that no longer exists. (Skip if the table is absent — older KBs.)
-     Also flag `outputs/` folders that have become ambiguous (many loose files, mixed
-     contexts, a sub-area that `wiki/`/`raw/` now has but `outputs/` doesn't) as candidates to
-     reorganise — the structure isn't fixed.
+   **Notes in the wrong place** (both modes). The top level of `notes/` is the inbox and its
+   subfolders are the archive (see `notes/README.md`). Flag notes at the top level that already
+   say `status: compiled` (older KBs, or a move that didn't happen) — the fix is moving each to
+   the area of its `articles:` and updating the wiki links that cite it — and notes inside a
+   subfolder that aren't `status: compiled` (they would never be picked up).
 
-5. **Check for stale references (code mode).** For articles that cite a file path (e.g. in
+   **Outputs** (research mode; skip what doesn't apply if `outputs/README.md` predates this
+   layout):
+   - Files under `outputs/` with no row in the index table, and rows pointing to a file that no
+     longer exists. A `work/<name>/` folder counts as one entry.
+   - Outputs outside the layout in `outputs/README.md`: loose files directly in `outputs/` or
+     `outputs/<area>/` instead of one of the purpose folders (study, deliverables, answers,
+     work — under their names in the KB's language), or an `<area>` the wiki doesn't have.
+   - `work/<name>/` folders without a `README.md`, or whose README doesn't list every `vN/`.
+   - Index rows whose "what for" is more than one short sentence, or whose status isn't one
+     of the allowed values — the detail belongs in the output itself.
+   - `.md` outputs without the frontmatter that says what they're based on.
+
+5. **Check for duplication between `outputs/` and `wiki/`** (research mode). The wiki is the
+   single source of truth, so flag:
+   - Wiki articles that point to an output as a stand-in for content ("a análise está em
+     outputs/…") instead of containing that knowledge.
+   - Outputs whose content largely restates a wiki article (same headings, same tables, the
+     same facts) rather than linking to it — and outputs marked as promoted whose content was
+     pasted whole into the wiki instead of only the new parts.
+   This is a judgment call, not a mechanical match: report candidates with the overlapping
+   passages, and propose the fix (move the knowledge into the article and trim the output to its
+   purpose, or replace the repeated part with a link) — never delete or merge on your own.
+
+6. **Check for stale references (code mode).** For articles that cite a file path (e.g. in
    backticks), spot-check whether that path still exists in the repo (`Glob`). Treat this as a
    low-confidence heuristic, not a hard rule — code moves around legitimately — and flag
    candidates rather than asserting they're wrong.
 
-6. **Report findings** as a clear list grouped by category, even if some categories are empty.
+7. **Report findings** as a clear list grouped by category, even if some categories are empty.
    Don't touch anything yet.
 
-7. **Ask the user which fixes to apply**, e.g.: relink or remove broken links, link orphaned
+8. **Ask the user which fixes to apply**, e.g.: relink or remove broken links, link orphaned
    articles into `wiki/index.md` (or confirm they should stay unlinked / be deleted), fix or
-   remove dangling manifest rows, and note stale-reference candidates for the user to confirm
-   before touching the article text.
+   remove dangling manifest rows, move misplaced notes to their archive folder (relinking the
+   wiki), move or index misplaced outputs, shorten index rows, resolve duplication by moving the
+   knowledge into the wiki and trimming the output, and note stale-reference candidates for the
+   user to confirm before touching the article text. Moves are shown as a full from → to list
+   first.
 
-8. **Apply only the approved fixes**, then report what changed.
+9. **Apply only the approved fixes**, then report what changed.
 
 ## Notes
 
 - Never delete an article without explicit confirmation — orphaned isn't the same as wrong, it
   might just be missing a link from `index.md`.
+- Never touch `raw/` and never flag its structure — it has no rules to break.
 - Never touch `wiki/_geral/` — it's a directory link into another vault, maintained by its own
   `compile-wiki`/`wiki-lint` run.
 - This complements `compile-wiki`, it doesn't replace it: run this periodically for upkeep, not

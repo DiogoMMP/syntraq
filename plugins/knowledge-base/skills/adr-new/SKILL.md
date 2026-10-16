@@ -15,7 +15,8 @@ that `compile-wiki` will later fold into the right wiki article.
    `KB_GUIDE.md` nearby, ask if not found or ambiguous.
 
 2. **Ensure `notes/` exists**, creating it with a short `README.md` (documenting the
-   `status: pending`/`status: compiled` frontmatter convention) if it doesn't.
+   `status: pending`/`status: compiled` frontmatter convention and that compiled notes are moved
+   into archive subfolders) if it doesn't.
 
 3. **Get the decision's content.** Prefer drafting from context: if the decision was just
    discussed in the conversation, draft the three sections yourself and show them to the user to
@@ -27,11 +28,13 @@ that `compile-wiki` will later fold into the right wiki article.
 
    Ask only for whatever isn't already clear from the conversation.
 
-4. **Write the note** to `notes/<YYYY-MM-DD>-adr-<slug>.md` (slug from the title):
+4. **Write the note** to `notes/<YYYY-MM-DD>-adr-<slug>.md` (slug from the title) — at the top
+   level of `notes/`, the inbox, never inside one of its archive subfolders:
 
    ```markdown
    ---
    status: pending
+   kind: decision
    ---
 
    # ADR: <Title>

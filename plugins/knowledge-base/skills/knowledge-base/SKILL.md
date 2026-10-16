@@ -44,8 +44,8 @@ viewer) is just the frontend for viewing it.
 4. **Research mode only: ask how `raw/` will hold source material.** Don't guess — it changes
    whether `raw/` ends up as a real folder, a link, or both:
 
-   - **Guardado diretamente** — files get copied/dropped into `raw/` as-is, versioned in this
-     repo, exactly like Karpathy's original design.
+   - **Guardado diretamente** — files get copied/dropped into `raw/` as-is, kept inside this
+     KB, exactly like Karpathy's original design.
    - **Link para uma pasta existente** — the material already lives elsewhere (a synced Drive
      folder, another repo, a folder you keep organizing outside git) and `raw/` should point at
      it instead of duplicating it. Ask for that folder's path.
@@ -88,29 +88,28 @@ viewer) is just the frontend for viewing it.
        Then list `raw/` to verify the link resolves — if it errors or comes back empty when the
        external folder isn't, remove the broken link and tell the user the path is wrong; don't
        report success.
-       Create a `.gitignore` in `<target>` containing `/raw/` — this is the one case where a
-       `.gitignore` is created without being asked, because linked content must never be
-       duplicated into this repo's git history. Since the file is being created anyway, also add
-       `.obsidian/workspace*.json` and `.obsidian/cache` so Obsidian's local state isn't
-       versioned by accident.
      - *Os dois*: create `raw/` as a real folder with `templates/raw-README.md` copied in, then
        for each external folder from step 4 create a named link inside it the same way (e.g.
-       `raw/<name>` → `<external>`), and add a `/raw/<name>/` line to `.gitignore` for each one
-       created, verifying each link the same way.
+       `raw/<name>` → `<external>`), verifying each link the same way.
      Either way, once `raw/` involves a link, append a short note to `KB_GUIDE.md` (after
-     copying it below) recording the external path(s) and that they're git-ignored — mirroring
-     the note added for `wiki/_geral` in step 7.
+     copying it below) recording the external path(s) and that they're read-only from this
+     KB's point of view — mirroring the note added for `wiki/_geral` in step 7.
+     Don't assume `<target>` is a git repository, and never create a `.gitignore` here. Only if
+     `<target>` already is inside one, mention that the linked folder(s) would be picked up by
+     git unless ignored, and offer to add the `.gitignore` lines — write them only on a yes.
    - Copy `templates/research-notes-README.md` → `<target>/notes/README.md` (not the code-mode
-     `notes-README.md`: research notes are thoughts, questions and AI answers about sources, with
-     optional `kind`/`source`/`from` frontmatter). `notes/` is always a real folder in this repo,
-     even when `raw/` is a link: it's where your own notes live, next to (never inside) the
-     external material.
+     `notes-README.md`: research notes are thoughts, decisions, questions, AI answers and
+     messages from other people, with optional `kind`/`from`/`source` frontmatter). `notes/` is
+     always a real folder in this KB, even when `raw/` is a link: it's where your own notes
+     live, next to (never inside) the external material.
    - Copy `templates/sources.md` → `<target>/wiki/sources.md`, so the manifest exists from the
      start.
    - Copy `templates/wiki-README.md` → `<target>/wiki/README.md`
    - Copy `templates/wiki-index.md` → `<target>/wiki/index.md`, replacing `{{TOPIC}}` and
      `{{DATE}}`
-   - Copy `templates/outputs-README.md` → `<target>/outputs/README.md`
+   - Copy `templates/outputs-README.md` → `<target>/outputs/README.md` (it defines the
+     `outputs/<area>/` purpose folders — study, deliverables, answers, versioned work — and the
+     short index table; don't pre-create any of those folders)
    - Copy `templates/tools-README.md` → `<target>/tools/README.md`
    - Copy `templates/KB_GUIDE.md` → `<target>/KB_GUIDE.md`, replacing `{{TOPIC}}`, `{{LANGUAGE}}` and `{{DATE}}`
      (this template's frontmatter sets `mode: research`)
@@ -136,10 +135,16 @@ viewer) is just the frontend for viewing it.
      `{{DATE}}` (this template's frontmatter sets `mode: code` and leaves `last_compiled_at`
      and `domain_model` empty — `compile-wiki` fills in the former on its first run)
 
-   Either way: if the target directory is inside a git repo, do not create a `.gitignore` unless
-   asked — just leave the `README.md` files as the thing that keeps otherwise-empty folders
-   tracked. The one exception is a linked `raw/` (step 4, *Link* or *Os dois*): that `.gitignore`
-   is created regardless, per step 5 above.
+   Either way:
+   - **Write every copied template in the KB's language** from step 3 — `KB_GUIDE.md`, every
+     `README.md`, `wiki/index.md` and the headers of `wiki/sources.md` — not only `AGENTS.md`.
+     Translate the names of the `outputs/` purpose folders, the `general/` folder and the
+     output statuses too, and use those translated names consistently in every file (e.g. for
+     `pt-PT`: `estudo/`, `entregas/`, `respostas/`, `trabalho/`, `geral/`; `rascunho`, `final`,
+     `promovido →`). Frontmatter keys and `kind:` values (`thought`, `decision`, `question`,
+     `ai-response`, `message`) stay in English — skills read them.
+   - Don't create a `.gitignore` unasked — the KB may well not be a git repository at all (see
+     the one offer in step 5 for a linked `raw/`).
 
 6. **Code mode only: ask about a domain model.** Ask the user whether the project has a domain
    model worth documenting (e.g. DDD entities, an ORM schema, an ER diagram, a class diagram).
@@ -195,13 +200,15 @@ viewer) is just the frontend for viewing it.
 ## Notes
 
 - Never write directly into `wiki/` as "the answer" to a one-off question. In research mode
-  that's what `outputs/` is for; only promote content into `wiki/` when it's meant to durably
-  enhance the knowledge base. Code mode has no `outputs/` — there's no one-off Q&A rendering
-  step, so this mostly doesn't come up.
+  that's what `outputs/` is for. The wiki is the single source of truth: outputs link to it
+  rather than repeat it, and promoting an output folds only what the wiki doesn't already say.
+  Code mode has no `outputs/` — there's no one-off Q&A rendering step, so this mostly doesn't
+  come up.
 - Keep source material read-only in spirit: `raw/` (research mode) is never edited by the LLM;
-  `notes/` (both modes) has its frontmatter status updated by `compile-wiki` but its written
-  content is never rewritten. In research mode `notes/` is the one place for the user's own
-  content, so it stays a real folder even when `raw/` is a link.
+  `notes/` (both modes) has its frontmatter status updated by `compile-wiki`, which then moves
+  the note into its archive folder, but its written content is never rewritten. In research
+  mode `notes/` is the one place for the user's own content, so it stays a real folder even
+  when `raw/` is a link.
 - When `raw/` (or a subfolder of it) is a link rather than a real folder, that's doubly true:
   never write into it, not even a `README.md` — it's someone else's folder, this KB just reads
   through it.
