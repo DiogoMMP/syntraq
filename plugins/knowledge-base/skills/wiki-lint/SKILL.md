@@ -58,6 +58,8 @@ Reports first, fixes only what the user approves.
    - Outputs whose content largely restates a wiki article (same headings, same tables, the
      same facts) rather than linking to it — and outputs marked as promoted whose content was
      pasted whole into the wiki instead of only the new parts.
+   Study material in the study purpose folder is the exception: it is meant to be printed and
+   does contain the material, so only flag it if it was promoted into the wiki whole.
    This is a judgment call, not a mechanical match: report candidates with the overlapping
    passages, and propose the fix (move the knowledge into the article and trim the output to its
    purpose, or replace the repeated part with a link) — never delete or merge on your own.
