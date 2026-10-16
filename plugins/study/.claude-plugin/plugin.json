@@ -1,0 +1,9 @@
+{
+  "name": "study",
+  "description": "Study skills on top of a research knowledge base: map what past exams ask (exam-map), with summaries, mock exams and solved exams to follow.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Diogo Pereira",
+    "email": "diogopereira812@gmail.com"
+  }
+}

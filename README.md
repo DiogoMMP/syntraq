@@ -4,19 +4,21 @@ Plugin de [Claude Code](https://code.claude.com) com uma coleção pessoal de sk
 
 ## Instalação
 
-Este repositório é uma marketplace com 3 plugins:
+Este repositório é uma marketplace com 4 plugins:
 
 | Plugin | Skills |
 | :--- | :--- |
 | `git-workflow` | `commit-push`, `create-pr` |
 | `dev-tools` | `implement-change`, `clean-architecture`, `write-tests`, `create-readme` |
 | `knowledge-base` | `knowledge-base`, `compile-wiki`, `capture-note`, `adr-new`, `resume`, `wiki-lint` |
+| `study` | `exam-map` |
 
 ```
 /plugin marketplace add DiogoMMP/ai-skills
 /plugin install git-workflow@ai-skills
 /plugin install dev-tools@ai-skills
 /plugin install knowledge-base@ai-skills
+/plugin install study@ai-skills
 ```
 
 Localmente, durante desenvolvimento: `claude --plugin-dir ./plugins/dev-tools`
@@ -64,6 +66,14 @@ Estas skills implementam o fluxo `raw/` → `wiki/` compilado por LLM descrito p
 | [resume](plugins/knowledge-base/skills/resume/SKILL.md) | Briefing para retomar um projeto pessoal parado | Briefing só de leitura: lê `wiki/Estrutura.md` (ou `index.md`), notas pendentes, e atividade git recente (incluindo alterações por commitar), e resume "onde ficaste" com sugestão de próximo passo. |
 | [wiki-lint](plugins/knowledge-base/skills/wiki-lint/SKILL.md) | Health check da `wiki/` (links partidos, órfãos, etc.) | Health check da `wiki/`: links partidos, artigos órfãos (não referenciados no `index.md`), referências desatualizadas a ficheiros/decisões que já não existem, entradas soltas em `wiki/sources.md`/`notes/`, notas fora do sítio (compiladas na inbox ou pendentes no arquivo), outputs fora da estrutura ou sem linha no índice, e conteúdo repetido entre `outputs/` e a wiki. Reporta primeiro, só corrige o que for aprovado. |
 
+
+### `study` — Estudo
+
+Skills de estudo que trabalham por cima de uma knowledge base em modo research (criada pelo `knowledge-base`): leem o que já está em `raw/` e na `wiki/`, sem impor nenhuma estrutura ao `raw/`, e escrevem o conhecimento na `wiki/`.
+
+| Skill | Resumo | Descrição |
+| :--- | :--- | :--- |
+| [exam-map](plugins/study/skills/exam-map/SKILL.md) | Mapeia o que sai nos exames de uma cadeira | Descobre os exames antigos em `raw/` pelo caminho, nome e conteúdo (exames, exame modelo, testes e resoluções), mostra a lista para confirmares na primeira vez, lê-os (com OCR quando são digitalizados) e classifica cada pergunta pelos artigos da própria wiki. Escreve na `wiki/` um artigo de exames — formato, tabela tema × exame com o peso de cada tema, ranking 🔥/⚠️/📎, tendências, tipos de pergunta, perguntas repetidas, estilo do professor e prioridades de estudo marcadas como interpretação — e um catálogo de perguntas com ids estáveis, de onde as outras skills de estudo tiram perguntas reais. Atualiza o artigo de avaliação que já exista em vez de criar outro, regista os exames em `wiki/sources.md`, é incremental (só lê exames novos) e assinala análises repetidas em `outputs/`. |
 
 ## Licença
 
