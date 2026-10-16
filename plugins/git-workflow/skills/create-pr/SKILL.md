@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: "Open a pull request for the current branch, following a GitFlow-style branching strategy for personal projects. It does NOT commit and does NOT push — the branch must already be committed and pushed (use `commit-push` for that). It reads the repository's pull request template FIRST, fills that exact template in from the real diff — in Portuguese by default — links every `docs/changes/` feature / bugfix / hotfix / fix record the branch touches, appends the `🤖 Generated with [Claude Code]` line at the end, shows the complete title and body, and waits for explicit validation before running `gh pr create`. Use whenever the user wants a PR opened or its body written — e.g. 'abre o PR', 'faz o pull request', 'cria PR para develop', 'open a PR', 'write the PR description', 'PR body'."
+description: "Open a pull request for the current branch, following a GitFlow-style branching strategy for personal projects. It does NOT commit and does NOT push — the branch must already be committed and pushed (use `commit-push` for that). It reads the repository's pull request template FIRST (or, when the repo has none, its own bundled default template), fills that exact template in from the real diff — in Portuguese by default — links every `docs/changes/` feature / bugfix / hotfix / fix record the branch touches, appends the `🤖 Generated with [Claude Code]` line at the end, shows the complete title and body, and waits for explicit validation before running `gh pr create`. Use whenever the user wants a PR opened or its body written — e.g. 'abre o PR', 'faz o pull request', 'cria PR para develop', 'open a PR', 'write the PR description', 'PR body'."
 allowed-tools: ["Bash", "AskUserQuestion", "Read", "Grep", "Glob"]
 ---
 
@@ -122,8 +122,16 @@ Then `cat` it and treat its content as the **skeleton you must fill in**:
   can tick them after checking.
 - **Hotfix sync checklist:** when the template has one and the PR is a `hotfix/*` or targets `main`,
   it is mandatory — fill it honestly rather than skipping it.
-- **If no template exists**, fall back to the sections the repo's `CLAUDE.md` requires (**Summary**,
-  **Changes**, **Tests**), and state in chat that no template was found.
+- **If the repo has no template**, use this skill's own default,
+  [`templates/PULL_REQUEST_TEMPLATE.md`](templates/PULL_REQUEST_TEMPLATE.md), and say in chat that
+  the repo has none and this one was used. Fill it under every rule above, with one adaptation: its
+  review checklist names `npm` commands (`npm run build`, `npm test`) — replace them with the
+  repo's own build and test commands, found from its manifests, scripts and CI (`dotnet build`,
+  `pytest`, `mvn verify`…), or drop the parenthetical when there is none; never leave a command the
+  repo doesn't have. If the repo's `CLAUDE.md` requires extra sections (e.g. **Summary**,
+  **Changes**, **Tests**), put them inside the template's `## 📋 Descrição` section. Don't add the
+  template to the repo — offer to, and only on a yes create `.github/PULL_REQUEST_TEMPLATE.md` as a
+  separate change for `commit-push` (this skill never commits).
 
 ---
 
@@ -196,7 +204,8 @@ inside a PR body (GitHub only resolves them inside files rendered from the repo)
 Rules:
 
 - **Where:** the template's additional-information section (`## 📎 Informações adicionais` here), or
-  wherever the repo's own template puts supplementary links. If the template has no such section, put
+  wherever the repo's own template puts supplementary links — in this skill's default template,
+  `## 🔗 Issues relacionadas`. If the template has no such section, put
   the list at the end of the description section — never invent a new heading for it (Step 3).
 - **Link text in the body's language**, and descriptive: the record id plus what it is, not a bare
   filename.
