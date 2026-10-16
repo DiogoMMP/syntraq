@@ -338,3 +338,9 @@ Short and factual:
 - **Index / ledger** — what you updated.
 - **Next step** — the work is uncommitted: `commit-push` to commit (and push), then `create-pr` to
   open the PR. Do not run them from here.
+
+---
+
+## Credits
+
+Credits to [@michelgomessilva](https://github.com/michelgomessilva).
