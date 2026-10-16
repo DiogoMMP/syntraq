@@ -29,7 +29,7 @@
     {
       "name": "study",
       "source": "./plugins/study",
-      "description": "Study skills on top of a research knowledge base: exam-map.",
+      "description": "Study skills on top of a research knowledge base: exam-map, study-summary.",
       "category": "productivity"
     }
   ]

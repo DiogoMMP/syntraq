@@ -11,7 +11,7 @@ Este repositório é uma marketplace com 4 plugins:
 | `git-workflow` | `commit-push`, `create-pr` |
 | `dev-tools` | `implement-change`, `clean-architecture`, `write-tests`, `create-readme` |
 | `knowledge-base` | `knowledge-base`, `compile-wiki`, `capture-note`, `adr-new`, `resume`, `wiki-lint` |
-| `study` | `exam-map` |
+| `study` | `exam-map`, `study-summary` |
 
 ```
 /plugin marketplace add DiogoMMP/ai-skills
@@ -74,6 +74,7 @@ Skills de estudo que trabalham por cima de uma knowledge base em modo research (
 | Skill | Resumo | Descrição |
 | :--- | :--- | :--- |
 | [exam-map](plugins/study/skills/exam-map/SKILL.md) | Mapeia o que sai nos exames de uma cadeira | Descobre os exames antigos em `raw/` pelo caminho, nome e conteúdo (exames, exame modelo, testes e resoluções), mostra a lista para confirmares na primeira vez, lê-os (com OCR quando são digitalizados) e classifica cada pergunta pelos artigos da própria wiki. Escreve na `wiki/` um artigo de exames — formato, tabela tema × exame com o peso de cada tema, ranking 🔥/⚠️/📎, tendências, tipos de pergunta, perguntas repetidas, estilo do professor e prioridades de estudo marcadas como interpretação — e um catálogo de perguntas com ids estáveis, de onde as outras skills de estudo tiram perguntas reais. Atualiza o artigo de avaliação que já exista em vez de criar outro, regista os exames em `wiki/sources.md`, é incremental (só lê exames novos) e assinala análises repetidas em `outputs/`. |
+| [study-summary](plugins/study/skills/study-summary/SKILL.md) | Escreve um resumo completo para imprimir, em Word e PDF | Faz o resumo de uma cadeira, de um bloco ou de alguns temas a partir da `wiki/`, do detalhe em `raw/` (slides, livros, fichas, resoluções) e do mapa de exames, com espaço proporcional ao peso de cada tema nos exames: definições, fórmulas (equações nativas do Word), métodos passo a passo, exemplos resolvidos, erros comuns e as perguntas reais de exame de cada tema. Mostra o índice para aprovação antes de escrever, guarda uma pasta por âmbito sem data no nome (`estudo/resumo-<âmbito>/`) com a versão e a data na capa e no rodapé, e renderiza com pandoc e Word — se o pandoc não estiver instalado, pergunta se o deve instalar. |
 
 ## Licença
 
