@@ -1,7 +1,7 @@
 {
   "name": "study",
   "description": "Study skills on top of a research knowledge base: map what past exams ask (exam-map), write printable Word/PDF summaries weighted by the exams (study-summary), create mock exams with separate solutions (mock-exam) and solve exams and exercise sheets with the course's own material (solve-exam).",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "Diogo Pereira",
     "email": "diogopereira812@gmail.com"
