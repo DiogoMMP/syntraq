@@ -1,6 +1,6 @@
 {
   "name": "study",
-  "description": "Study skills on top of a research knowledge base: map what past exams ask (exam-map), write printable Word/PDF summaries weighted by the exams (study-summary), create mock exams with separate solutions (mock-exam), solve exams and exercise sheets with the course's own material (solve-exam), mark attempts while tracking weak spots (correct-attempt) and run adaptive quizzes in the chat (quiz).",
+  "description": "Study skills on top of a research knowledge base: map what past exams ask (exam-map), write printable Word/PDF summaries weighted by the exams (study-summary), create mock exams with separate solutions (mock-exam), solve exams and exercise sheets with the course's own material (solve-exam), mark attempts while tracking weak spots (correct-attempt), run adaptive quizzes in the chat (quiz) and make Anki flashcards (flashcards).",
   "version": "0.6.0",
   "author": {
     "name": "Diogo Pereira",
