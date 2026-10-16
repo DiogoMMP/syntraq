@@ -81,18 +81,12 @@ goes into the wiki.
    Render the assessment with `python <plugin>/scripts/render.py <file.md>` (pandoc checked as in
    `study-summary` step 2 — ask before installing it; without it keep only the `.md`).
 
-9. **Rebuild the progress record** `<progress>-<course>.md` from the frontmatter of every
-   assessment in `<attempts>/` — rebuilt, not patched, so it can't drift — following
-   `templates/progress.md`:
-   - **by topic**: scored/possible summed over all attempts, the percentage, the per-attempt
-     percentage of the last three, the state — 🔴 below 50%, 🟡 50–75%, 🟢 75% or more, ⚪ fewer
-     than two attempts on the topic — and the recurring mistake kinds;
-   - **study priority**: weakness crossed with the topic's exam band and weight from the exams
-     article (🔴 and 🔥 first; a 🟢 topic drops out however heavy it is);
-   - **most frequent mistakes**, by kind, with their topics;
-   - **attempts**: number, date, paper, estimated grade, link.
-   The record isn't rendered to PDF. Add or update its single row in the index table of
-   `outputs/README.md`.
+9. **Rebuild the progress record** `<progress>-<course>.md` exactly as
+   `../../references/progress.md` describes (the plugin's `references/` folder): rebuilt from the
+   frontmatter of every assessment in `<attempts>/` and every quiz session in `<quizzes>/`, never
+   patched — by topic (attempts, last three, quiz, state, recurring mistakes), study priority
+   crossed with exam weight, most frequent mistakes, and the history. Follow
+   `templates/progress.md` for its layout.
 
 10. **Report**: the estimated grade, what to review first (from the study priority), and a next
     step — e.g. a mock exam focused on weak spots (`mock-exam`), or the summary sections of the 🔴
@@ -102,7 +96,7 @@ goes into the wiki.
 
 "Quais são os meus pontos fracos?" or "como estou a ENGCIA?" — read the progress record and
 answer from it in the chat; don't mark anything. If there's no record yet, say so and suggest
-marking an attempt first.
+marking an attempt or doing a `quiz` first.
 
 ## Notes
 
