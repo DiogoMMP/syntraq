@@ -6,7 +6,8 @@ Usage:
 The .docx and .pdf are written next to the source, with the same name. The source's
 frontmatter may set:
     title, subtitle, date, lang, toc-title   used by pandoc for the cover and the table of contents
-    version, updated                         shown in the footer of every page
+    toc: false                               leave the table of contents out (e.g. an exam paper)
+    version, updated                         shown in the footer of every page, when present
 
 Wiki links ([[Article]] / [[Article|text]]) are turned into plain text, since they mean
 nothing outside Obsidian.
@@ -52,7 +53,7 @@ def strip_wikilinks(text):
     return WIKILINK.sub(lambda m: m.group(2) or m.group(1).split("/")[-1], text)
 
 
-def run_pandoc(pandoc, source, docx_path, reference):
+def run_pandoc(pandoc, source, docx_path, reference, toc):
     text = strip_wikilinks(source.read_text(encoding="utf-8"))
     with tempfile.TemporaryDirectory() as tmp:
         prepared = Path(tmp) / source.name
@@ -64,12 +65,12 @@ def run_pandoc(pandoc, source, docx_path, reference):
             "--to=docx",
             f"--reference-doc={reference}",
             f"--resource-path={source.parent}",
-            "--toc",
-            "--toc-depth=2",
             "--highlight-style=tango",
             "-o",
             str(docx_path),
         ]
+        if toc:
+            cmd[2:2] = ["--toc", "--toc-depth=2"]
         result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         sys.stderr.write(result.stderr)
@@ -189,7 +190,8 @@ def main():
     pdf_path = source.with_suffix(".pdf")
     meta = read_frontmatter(source.read_text(encoding="utf-8"))
 
-    run_pandoc(pandoc, source, docx_path, reference)
+    toc = meta.get("toc", "true").lower() not in ("false", "no", "0")
+    run_pandoc(pandoc, source, docx_path, reference, toc)
     add_footer(docx_path, meta, source.stem)
     print(f"DOCX: {docx_path}")
 
