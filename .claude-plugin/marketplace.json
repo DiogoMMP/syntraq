@@ -1,11 +1,11 @@
 {
-  "name": "ai-skills",
+  "name": "syntraq",
   "owner": {
     "name": "Diogo Pereira",
     "email": "diogopereira812@gmail.com"
   },
   "metadata": {
-    "description": "Diogo Pereira's personal marketplace of Claude Code skills."
+    "description": "Syntraq — Power up your agents. Diogo Pereira's Claude Code plugins for git, development, knowledge bases and study."
   },
   "plugins": [
     {
