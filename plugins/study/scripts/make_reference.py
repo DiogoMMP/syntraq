@@ -26,7 +26,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
-STYLE_VERSION = 1
+STYLE_VERSION = 2
 
 BODY_FONT = "Calibri"
 CODE_FONT = "Consolas"
@@ -107,7 +107,9 @@ def build(pandoc, out):
             style.paragraph_format.keep_with_next = True
     heading_1 = style_or_none(doc, "Heading 1")
     if heading_1 is not None:
-        heading_1.paragraph_format.page_break_before = True
+        # No page break before each section: short sections would leave half-empty printed pages.
+        heading_1.paragraph_format.page_break_before = False
+        heading_1.paragraph_format.space_before = Pt(22)
 
     for name in ("Title", "Subtitle"):
         style = style_or_none(doc, name)

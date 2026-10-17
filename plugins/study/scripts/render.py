@@ -35,6 +35,49 @@ import make_reference
 
 WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 
+# Inside a ::: {custom-style="…"} box, pandoc styles paragraphs but not list items, so a list in a box
+# would lose the box's shading. This filter turns such lists into paragraphs that start with "•" or the
+# item number.
+BOX_LISTS_FILTER = r"""
+local function flatten(blocks)
+  local out = {}
+  for _, b in ipairs(blocks) do
+    if b.t == 'BulletList' or b.t == 'OrderedList' then
+      local n = 1
+      if b.t == 'OrderedList' then n = (b.listAttributes and b.listAttributes.start) or b.start or 1 end
+      for _, item in ipairs(b.content) do
+        local marker = b.t == 'BulletList' and '•' or (tostring(n) .. '.')
+        local first = true
+        for _, ib in ipairs(item) do
+          if ib.t == 'Plain' or ib.t == 'Para' then
+            local inlines = ib.content
+            if first then
+              table.insert(inlines, 1, pandoc.Space())
+              table.insert(inlines, 1, pandoc.Str(marker))
+              first = false
+            end
+            table.insert(out, pandoc.Para(inlines))
+          else
+            table.insert(out, ib)
+          end
+        end
+        n = n + 1
+      end
+    else
+      table.insert(out, b)
+    end
+  end
+  return out
+end
+
+function Div(el)
+  if el.attributes['custom-style'] then
+    el.content = flatten(el.content)
+    return el
+  end
+end
+"""
+
 
 def read_frontmatter(text):
     """Return the flat key: value pairs of a YAML frontmatter block (enough for our keys)."""
@@ -53,11 +96,21 @@ def strip_wikilinks(text):
     return WIKILINK.sub(lambda m: m.group(2) or m.group(1).split("/")[-1], text)
 
 
+def highlight_flag(pandoc):
+    """pandoc 3.8 renamed --highlight-style to --syntax-highlighting."""
+    out = subprocess.run([pandoc, "--version"], capture_output=True, text=True).stdout
+    match = re.search(r"pandoc(?:\.exe)?\s+(\d+)\.(\d+)", out)
+    version = (int(match.group(1)), int(match.group(2))) if match else (0, 0)
+    return "--syntax-highlighting=tango" if version >= (3, 8) else "--highlight-style=tango"
+
+
 def run_pandoc(pandoc, source, docx_path, reference, toc):
     text = strip_wikilinks(source.read_text(encoding="utf-8"))
     with tempfile.TemporaryDirectory() as tmp:
         prepared = Path(tmp) / source.name
         prepared.write_text(text, encoding="utf-8")
+        box_filter = Path(tmp) / "box-lists.lua"
+        box_filter.write_text(BOX_LISTS_FILTER, encoding="utf-8")
         cmd = [
             pandoc,
             str(prepared),
@@ -65,7 +118,8 @@ def run_pandoc(pandoc, source, docx_path, reference, toc):
             "--to=docx",
             f"--reference-doc={reference}",
             f"--resource-path={source.parent}",
-            "--highlight-style=tango",
+            f"--lua-filter={box_filter}",
+            highlight_flag(pandoc),
             "-o",
             str(docx_path),
         ]
