@@ -55,6 +55,7 @@ Nothing here assumes the folder is a git repository. Versions of a piece of work
 
 ## Ground rules
 
+- Write every `.md` file without hard line breaks: one paragraph, list item or table row per line, however long. The viewer (Obsidian, GitHub) wraps lines; breaks belong only between blocks and inside code blocks.
 - The wiki is written and maintained by the LLM. Humans view it, they don't hand-edit it.
 - Keep `wiki/index.md` accurate — it's the entry point for every future session.
 - Never write into `raw/`. Never rewrite the body of a note — `compile-wiki` only updates its frontmatter and moves it to its area.

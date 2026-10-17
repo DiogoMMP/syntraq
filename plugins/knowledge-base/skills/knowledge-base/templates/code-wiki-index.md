@@ -2,8 +2,7 @@
 
 Created {{DATE}}.
 
-Map of content for this repo's knowledge base. Kept up to date by `compile-wiki` as notes and
-commits get folded into articles.
+Map of content for this repo's knowledge base. Kept up to date by `compile-wiki` as notes and commits get folded into articles.
 
 ## Concepts
 

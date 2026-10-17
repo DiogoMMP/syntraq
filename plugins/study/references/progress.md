@@ -34,8 +34,7 @@ For each topic (a wiki article) that appears in any input:
 - **State**:
   - from the assessments when the topic has **two or more** of them: 🔴 below 50%, 🟡 50–75%, 🟢 75% or more;
   - otherwise from the quiz sessions, with the same thresholds, when the topic has **five or more** quiz questions — marked "(quiz)";
-  - otherwise ⚪ not enough data.
-  An exam-style result always wins over quiz results: as soon as a topic has two assessments, quizzes stop deciding its state.
+  - otherwise ⚪ not enough data. An exam-style result always wins over quiz results: as soon as a topic has two assessments, quizzes stop deciding its state.
 - **Recurring mistakes** — mistake kinds seen at least twice on the topic, from either source.
 
 ## Study priority
