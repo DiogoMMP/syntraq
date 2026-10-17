@@ -10,7 +10,8 @@ frontmatter may set:
     version, updated                         shown in the footer of every page, when present
 
 Wiki links ([[Article]] / [[Article|text]]) are turned into plain text, since they mean
-nothing outside Obsidian.
+nothing outside Obsidian. The band and state emoji (🔥 ⚠️ 📎 🔴 🟡 🟢 ⚪) are swapped for plain symbols
+in the Word/PDF only: a single emoji makes Word embed the whole emoji font (~4 MB per PDF).
 
 Exit codes: 0 ok (the PDF may still be skipped — see the last line printed), 2 bad input,
 3 pandoc not installed, 4 pandoc failed.
@@ -34,6 +35,16 @@ from docx.oxml.ns import qn
 import make_reference
 
 WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
+
+# Plain symbols for the band and state emoji, in the Word/PDF only — the .md keeps the emoji.
+EMOJI = {"🔥": "●●●", "⚠️": "●●○", "⚠": "●●○", "📎": "●○○", "🔴": "▼", "🟡": "◆", "🟢": "▲", "⚪": "○"}
+
+
+def swap_emoji(text):
+    for emoji, symbol in EMOJI.items():
+        text = text.replace(emoji, symbol)
+    return text
+
 
 # Inside a ::: {custom-style="…"} box, pandoc styles paragraphs but not list items, so a list in a box
 # would lose the box's shading. This filter turns such lists into paragraphs that start with "•" or the
@@ -105,7 +116,7 @@ def highlight_flag(pandoc):
 
 
 def run_pandoc(pandoc, source, docx_path, reference, toc):
-    text = strip_wikilinks(source.read_text(encoding="utf-8"))
+    text = swap_emoji(strip_wikilinks(source.read_text(encoding="utf-8")))
     with tempfile.TemporaryDirectory() as tmp:
         prepared = Path(tmp) / source.name
         prepared.write_text(text, encoding="utf-8")

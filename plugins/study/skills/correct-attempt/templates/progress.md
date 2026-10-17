@@ -12,12 +12,13 @@ Rebuilt from the assessments in `attempts/` and the quiz sessions in `quizzes/` 
 
 ## By topic
 
-State: 🔴 weak (below 50%) · 🟡 improving (50–75%) · 🟢 mastered (75% or more) · ⚪ not enough data. It comes from the attempts when a topic has two or more; otherwise from the quizzes when it has five or more quiz questions, marked "(quiz)".
+State: 🔴 weak (below 50%) · 🟡 improving (50–75%) · 🟢 mastered (75% or more) · ⚪ not enough data. It comes from the attempts — provisional, marked "(1 attempt)", while a topic has only one; with no attempt, from the quizzes when the topic has five or more quiz questions, marked "(quiz)".
 
 | Topic | Attempts | % | Last 3 | Quiz | State | Recurring mistakes |
 | --- | --- | --- | --- | --- | --- | --- |
 | [[Topic A]] | 34 / 60 | 57% | 40% → 55% → 75% | 80% | 🟡 | incomplete answers |
 | [[Topic C]] | — | — | — | 45% | 🔴 (quiz) | concept |
+| [[Topic D]] | 6 / 20 | 30% | 30% | — | 🔴 (1 attempt) | calculation |
 
 ## Study priority
 
@@ -31,7 +32,7 @@ Weakness crossed with how much the topic weighs in the exams ([[Exams of {{COURS
 | --- | --- | --- |
 | calculation | 4 | [[Topic B]] |
 
-Kinds: concept · calculation · incomplete · misread the question · notation · unanswered.
+Kinds (shown in the KB's language): concept · calculation · incomplete · misread the question · notation · unanswered.
 
 ## Attempts
 

@@ -35,7 +35,7 @@ Turns the course into cards worth reviewing every day: one fact each, grounded i
 
 4. **Design the cards.**
    - **basic**: a definition, a "why?", the difference between two concepts, the next step of a method, what a piece of code does;
-   - **cloze**: formulas, rules, syntax and the items of a list that matters (`{{c1::insertLogical}} keeps a fact only while …`).
+   - **cloze**: formulas, rules, syntax and the items of a list that matters (`{{c1::insertLogical}} keeps a fact only while …`). Inside a formula, never let the cloze's `}}` touch a LaTeX `}` — Anki would close the cloze early: write `{ {{c1::x}} }` with spaces, or put the cloze around the whole `$…$`.
    - Tags on every card: the course, the topic, the exam band as `exam::frequent` / `exam::regular` / `exam::rare` (🔥/⚠️/📎 — written in the KB's language), and `weak` when the topic is 🔴/🟡 in the progress record.
 
 5. **Show before writing them all**: the number of cards per topic (and basic/cloze split) and five sample cards. Write the rest after a yes.

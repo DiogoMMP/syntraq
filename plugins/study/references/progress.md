@@ -19,6 +19,10 @@ e.g. `progresso-engcia/progresso-engcia.md`, `progresso-engcia/tentativas/01-sim
 
 Every time an assessment or a quiz session is added, rebuild `<progress>-<course>.md` from scratch out of the frontmatter of every file in `<attempts>/` and `<quizzes>/`, following `skills/correct-attempt/templates/progress.md`. Never edit the record incrementally — rebuilding means it can't drift from the files it summarises. The record isn't rendered to PDF. Keep its single row in the index table of `outputs/README.md` current.
 
+## Writing it
+
+Write the record in the KB's language: headings, labels, the state markers' wording, and numbers in that language's format (`12,5` in `pt-PT`). Mistake kinds are stored in English in the frontmatter (`concept`, `calculation`, …) but shown translated in the record (e.g. `conceito`, `cálculo`, `incompleto`, `interpretação`, `notação`, `por responder`).
+
 ## Inputs
 
 - **Assessment** (`type: assessment`): per question `topic`, `marks`, `scored`, `errors`, plus `attempt_date`, `paper` and `estimated_grade`.
@@ -33,13 +37,14 @@ For each topic (a wiki article) that appears in any input:
 - **Quiz** — points / questions over all quiz sessions on the topic, as a percentage.
 - **State**:
   - from the assessments when the topic has **two or more** of them: 🔴 below 50%, 🟡 50–75%, 🟢 75% or more;
-  - otherwise from the quiz sessions, with the same thresholds, when the topic has **five or more** quiz questions — marked "(quiz)";
-  - otherwise ⚪ not enough data. An exam-style result always wins over quiz results: as soon as a topic has two assessments, quizzes stop deciding its state.
+  - from its single assessment when it has **one**, with the same thresholds, marked as provisional — "(1 attempt)" in the KB's language — so the first mock exam already gives feedback;
+  - otherwise (no assessment) from the quiz sessions, with the same thresholds, when the topic has **five or more** quiz questions — marked "(quiz)";
+  - otherwise ⚪ not enough data. An exam-style result always wins over quiz results: as soon as a topic has one assessment, quizzes stop deciding its state.
 - **Recurring mistakes** — mistake kinds seen at least twice on the topic, from either source.
 
 ## Study priority
 
-List the 🔴 and 🟡 topics (including "(quiz)" states), ordered by state first (🔴 before 🟡) and then by the topic's band and weight in the course's exams article (🔥 before ⚠️ before 📎, heavier first). Show each with its state and its exam band. 🟢 and ⚪ topics are left out.
+List the 🔴 and 🟡 topics (including provisional and "(quiz)" states), ordered by state first (🔴 before 🟡) and then by the topic's band and weight in the course's exams article (🔥 before ⚠️ before 📎, heavier first). Show each with its state and its exam band. 🟢 and ⚪ topics are left out.
 
 ## Most frequent mistakes
 

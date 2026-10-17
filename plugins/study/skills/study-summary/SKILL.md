@@ -74,6 +74,6 @@ A summary to print and study from: everything the course asks for, weighted by w
 
 ## Notes
 
-- Write for printing: no "click here", no colour-only meaning (the bands also carry their emoji and text), tables that fit A4 portrait.
+- Write for printing: no "click here", no colour-only meaning, tables that fit A4 portrait. Use the band and state emoji (🔥 ⚠️ 📎, 🔴 🟡 🟢 ⚪) freely in the `.md`: the renderer swaps them for plain symbols in the Word/PDF (●●● ●●○ ●○○, ▼ ◆ ▲ ○), which keeps the PDF small — so the quick map's legend line must name each band in words too.
 - A summary covers what the course teaches; the exam map only decides how much space each topic gets. A topic that never comes up still gets its short section if it's in scope.
 - Don't summarise exam questions beyond one line each — the catalog links to the papers.

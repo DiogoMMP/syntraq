@@ -35,6 +35,8 @@ Turns a course's past exams into durable knowledge in the wiki: what the exam lo
    - within those paths and any folder named after the course, files whose path or name suggests an assessment — `exame`, `exam`, `teste`, `test`, `frequência`, `época`, `normal`, `recurso`, `especial`, `modelo`, `mini`, `quiz`, `resolução`, `correção`, `solução`, `solution`, in any language the folder uses;
    - PDFs/documents in those paths whose first page reads as an exam paper (a title like "Exame", a duration, marks per question).
 
+   Name matching is only a first sieve: words like `test` or `exam` also match `ColorTest.zip` or `TMS-example.zip`. Discard a candidate when its content isn't an assessment (code, archives, slides).
+
    Classify each candidate, from its name, path and first page:
    - **exam** — with school year, sitting (normal / recurso / especial / …) and date when the paper states it;
    - **model exam** — a sample/specimen paper;
@@ -44,9 +46,9 @@ Turns a course's past exams into durable knowledge in the wiki: what the exam lo
 
    **First run for this course:** show the list as a table (file → kind, year, sitting, date, solution) and ask the user to confirm or correct it — wrong entries, missing files, a different folder to look in. **Later runs:** only ask about candidates not already in `exam_map.exams` (or dismissed in `exam_map.ignored`). If nothing is new and no processed exam has disappeared, say so and stop.
 
-5. **Read each new exam.** Read the file directly (PDF pages via `Read`). If it's scanned or the text comes out empty or garbled, use the `pdf` skill (OCR). For each question and sub-question record: its number, marks (as % of the exam), the topic(s), the kind of question (explain/compare/comment, calculation, trace an execution, write code/rules, draw, multiple choice, …) and a one-line summary of what it asks — a summary, never the full text copied. If a solution exists, note where each answer is.
+5. **Read each new exam.** Read the file directly (PDF pages via `Read`). If it's scanned or the text comes out empty or garbled, use the `pdf` skill (OCR). Extracted text often mangles symbols — `∞` read as `8`, probabilities like `P(E|H)` garbled — so check formulas and numbers against the page image, and when the two disagree, the image wins. For each question and sub-question record: its number, marks (as % of the exam), the topic(s), the kind of question (explain/compare/comment, calculation, trace an execution, write code/rules, draw, multiple choice, …) and a one-line summary of what it asks — a summary, never the full text copied. If a solution exists, note where each answer is.
 
-6. **Classify by topic.** Topics are the area's wiki articles, written as `[[Article]]` links, so other skills can join the exam data with the study material.
+6. **Classify by topic.** Topics are the area's wiki articles, written as `[[Article]]` links, so other skills can join the exam data with the study material. When one article covers several things the exams treat as separate topics (e.g. Bayes and fuzzy logic in one article on uncertainty), the topic is that article plus the part: `[[Article]] — part`, named after the article's own section, and used the same way everywhere.
    - A question that mixes topics is split by the marks of its sub-questions; when a single sub-question mixes two, give it to its main topic.
    - A question no article covers gets a short plain-text topic marked as having no article, and goes in the report as something for `compile-wiki` to cover.
    - Keep the classification consistent across exams: the same kind of question gets the same topic every year.

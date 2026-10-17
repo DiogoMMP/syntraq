@@ -39,7 +39,16 @@ from pathlib import Path
 DAY = re.compile(r"^###\s+(\d{4}-\d{2}-\d{2})\b(.*)$")
 TASK = re.compile(r"^\s*-\s+\[( |x|X)\]\s+(.*)$")
 HOURS = re.compile(r"(\d+(?:[.,]\d+)?)\s*(h|min)\b")
+WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 EXAM = re.compile(r"^\s*-\s+([^:]+):\s*(\d{4}-\d{2}-\d{2})(?:\s+(\d{1,2}:\d{2}))?(?:\s+(\d+(?:[.,]\d+)?)\s*h)?\s*$")
+
+
+def plain(text):
+    """Calendar apps show text, not markdown: drop wiki links, code marks and emphasis."""
+    text = WIKILINK.sub(lambda m: m.group(2) or m.group(1).split("/")[-1], text)
+    text = re.sub(r"`([^`]*)`", lambda m: m.group(1), text)
+    text = re.sub(r"\*\*(.+?)\*\*|__(.+?)__", lambda m: m.group(1) or m.group(2), text)
+    return re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", lambda m: m.group(1), text)
 
 
 def minutes(text):
@@ -80,7 +89,7 @@ def parse(source):
             continue
         task = TASK.match(line)
         if task and current is not None and task.group(1) == " ":
-            current["tasks"].append(task.group(2).strip())
+            current["tasks"].append(plain(task.group(2).strip()))
     days = [d for d in days if d["tasks"]]
     if not days and not exams:
         sys.stderr.write("no study days or exams found\n")
