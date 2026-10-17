@@ -23,10 +23,10 @@ The "lint" step from Karpathy's [LLM Knowledge Bases](https://gist.github.com/ka
    **Notes in the wrong place** (both modes). The top level of `notes/` is the inbox and its subfolders are the archive (see `notes/README.md`). Flag notes at the top level that already say `status: compiled` (older KBs, or a move that didn't happen) — the fix is moving each to the area of its `articles:` and updating the wiki links that cite it — and notes inside a subfolder that aren't `status: compiled` (they would never be picked up).
 
    **Outputs** (research mode; skip what doesn't apply if `outputs/README.md` predates this layout):
-   - Files under `outputs/` with no row in the index table, and rows pointing to a file that no longer exists. A `work/<name>/` folder counts as one entry.
+   - Files under `outputs/` with no row in the index table, and rows pointing to a file that no longer exists. A folder indexed as a whole counts as one entry and covers every file inside it: a `work/<name>/` folder, and each piece of study material in the study folder — a summary, a mock exam, a solution, a flashcard deck or a study plan (each its own folder), and the progress folder.
    - Outputs outside the layout in `outputs/README.md`: loose files directly in `outputs/` or `outputs/<area>/` instead of one of the purpose folders (study, deliverables, answers, work — under their names in the KB's language), or an `<area>` the wiki doesn't have.
    - `work/<name>/` folders without a `README.md`, or whose README doesn't list every `vN/`.
-   - Index rows whose "what for" is more than one short sentence, or whose status isn't one of the allowed values — the detail belongs in the output itself.
+   - Index rows whose "what for" is more than one short sentence, or whose status isn't one of the statuses `outputs/README.md` lists (in the KB's language, e.g. `rascunho`, `final`, `promovido →` in `pt-PT`) — the detail belongs in the output itself.
    - `.md` outputs without the frontmatter that says what they're based on.
 
 5. **Check for duplication between `outputs/` and `wiki/`** (research mode). The wiki is the single source of truth, so flag:
