@@ -51,7 +51,7 @@ claude --plugin-dir ./plugins/dev-tools
 | Skill | O que faz |
 | :--- | :--- |
 | `commit-push` | Cria commits (Conventional Commits) e faz push, seguindo GitFlow |
-| `create-pr` | Abre um pull request preenchendo o template do repositório |
+| `create-pr` | Abre um pull request preenchendo o template do repositório (ou um template por defeito, se não houver) |
 
 ### [`dev-tools`](plugins/dev-tools/README.md) — Desenvolvimento
 

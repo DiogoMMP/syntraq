@@ -23,7 +23,7 @@ Commits e pull requests num fluxo GitFlow para projetos pessoais. Cada passo que
 <details>
 <summary><b><code>commit-push</code></b> — Cria commits (Conventional Commits) e faz push, seguindo GitFlow</summary>
 
-Lê o estado do repositório, valida a branch contra o modelo GitFlow (`main`/`develop`/`feature`/`bugfix`/`release`/`hotfix`), agrupa o diff em commits coerentes e mostra a(s) mensagem(ns) propostas no chat, aguardando validação explícita antes de commitar — e pergunta separadamente, só depois, se deve fazer push. Uma issue do GitHub pode ser referenciada (`Refs: #12`) mas nunca é obrigatória.
+Lê o estado do repositório, valida a branch contra o modelo GitFlow (`main`/`develop`/`feature`/`bugfix`/`release`/`hotfix`, e também os prefixos do Conventional Commits como `fix/`, `chore/`, `docs/` ou `refactor/`) — ou contra o modelo que o `AGENTS.md`/`CLAUDE.md` do repositório descreve — agrupa o diff em commits coerentes e mostra a(s) mensagem(ns) propostas no chat, aguardando validação explícita antes de commitar — e pergunta separadamente, só depois, se deve fazer push. Quando há uma issue do GitHub associada (no nome da branch ou na conversa), é referenciada (`Refs: #12`); quando não há, não se pede uma.
 
 → [`SKILL.md`](skills/commit-push/SKILL.md)
 

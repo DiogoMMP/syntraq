@@ -2,7 +2,7 @@
 
 Parte do [Syntraq](../../README.md) — *Power up your agents*.
 
-Uma knowledge base pessoal mantida por LLM: as fontes ficam em `raw/` (sem regras de estrutura), as tuas notas numa inbox em `notes/`, e o LLM compila tudo numa `wiki/` em markdown, com backlinks, para ler no Obsidian. Tem dois modos — **research**, para muito material externo, e **code**, para o registo de decisões de um repositório de código pessoal.
+Uma knowledge base pessoal mantida por LLM, que o LLM compila numa `wiki/` em markdown, com backlinks, para ler no Obsidian. Em modo **research**, as fontes ficam em `raw/` (sem regras de estrutura) e as tuas notas numa inbox em `notes/`; em modo **code** não há `raw/`: a wiki é alimentada pelas notas em `notes/` e pelo histórico git do repositório. Tem dois modos — **research**, para muito material externo, e **code**, para o registo de decisões de um repositório de código pessoal.
 
 ## Instalação
 
