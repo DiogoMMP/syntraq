@@ -5,15 +5,9 @@
 
 # Syntraq
 
-![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20marketplace-D97757?logo=anthropic&logoColor=white)
-![Plugins](https://img.shields.io/badge/plugins-4-7C5CFF)
-![Skills](https://img.shields.io/badge/skills-21-22D3EE)
-![Commits](https://img.shields.io/badge/commits-Conventional-FE5196?logo=conventionalcommits&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20marketplace-D97757?logo=anthropic&logoColor=white) ![Plugins](https://img.shields.io/badge/plugins-4-7C5CFF) ![Skills](https://img.shields.io/badge/skills-21-22D3EE) ![Commits](https://img.shields.io/badge/commits-Conventional-FE5196?logo=conventionalcommits&logoColor=white) ![License](https://img.shields.io/badge/license-MIT-blue)
 
-Marketplace de plugins para o [Claude Code](https://code.claude.com): skills que levam o agente do pedido
-à entrega — commits e pull requests com aprovação em cada passo, mudanças implementadas com registo escrito,
-knowledge bases mantidas por LLM e estudo para exames a partir dessa knowledge base.
+Marketplace de plugins para o [Claude Code](https://code.claude.com): skills que levam o agente do pedido à entrega — commits e pull requests com aprovação em cada passo, mudanças implementadas com registo escrito, knowledge bases mantidas por LLM e estudo para exames a partir dessa knowledge base.
 
 Cada plugin instala-se à parte e tem o seu próprio README com a descrição completa de cada skill.
 
@@ -113,24 +107,17 @@ syntraq/
 
 ## Contribuir
 
-- **Branches** — nada vai diretamente para a `main`: cada trabalho vive numa `feature/<slug>` e entra por
-  pull request (`create-pr`).
-- **Commits** — Conventional Commits em inglês, com o tipo e o plugin no scope:
-  `feat(study): add mock-exam…`, `fix(knowledge-base): …`.
-- **Versões** — cada plugin tem a sua, em `plugins/<plugin>/.claude-plugin/plugin.json`, e sobe num commit
-  `chore(release): bump <plugin> to X.Y.Z` à parte (`commit-push` trata disso).
-- **Validação** — antes de um commit, `claude plugin validate ./plugins/<plugin>` e
-  `claude plugin validate .` para o marketplace.
+- **Branches** — nada vai diretamente para a `main`: cada trabalho vive numa `feature/<slug>` e entra por pull request (`create-pr`).
+- **Commits** — Conventional Commits em inglês, com o tipo e o plugin no scope: `feat(study): add mock-exam…`, `fix(knowledge-base): …`.
+- **Versões** — cada plugin tem a sua, em `plugins/<plugin>/.claude-plugin/plugin.json`, e sobe num commit `chore(release): bump <plugin> to X.Y.Z` à parte (`commit-push` trata disso).
+- **Validação** — antes de um commit, `claude plugin validate ./plugins/<plugin>` e `claude plugin validate .` para o marketplace.
 
 ---
 
 ## Créditos
 
-- O plugin [`knowledge-base`](plugins/knowledge-base/README.md) segue o fluxo `raw/` → `wiki/` compilado por
-  LLM descrito por [Andrej Karpathy](https://x.com/karpathy/status/2039805659525644595) na nota
-  ["LLM Knowledge Bases"](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
-- [`implement-change`](plugins/dev-tools/README.md) — créditos a
-  [@michelgomessilva](https://github.com/michelgomessilva).
+- O plugin [`knowledge-base`](plugins/knowledge-base/README.md) segue o fluxo `raw/` → `wiki/` compilado por LLM descrito por [Andrej Karpathy](https://x.com/karpathy/status/2039805659525644595) na nota ["LLM Knowledge Bases"](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
+- [`implement-change`](plugins/dev-tools/README.md) — créditos a [@michelgomessilva](https://github.com/michelgomessilva).
 
 ---
 
