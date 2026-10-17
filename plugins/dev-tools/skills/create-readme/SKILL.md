@@ -1,6 +1,6 @@
 ---
 name: create-readme
-description: "Write (or rewrite) a project's root README.md from the house template — the badge wall, table of contents, tech-stack table, architecture diagram + layer table, annotated solution layout, module/domain map, patterns & conventions digest, runnable getting-started, testing, code style, observability, documentation map and contributing/branching sections — adapted to whatever the project actually is (any stack: .NET, Node/Next.js, Python, Java, Go, mobile, library, CLI, monorepo). It investigates the repository first and documents only what it can prove from real files; it never invents a command, a version or a URL, and deletes the sections the project has no answer for instead of stubbing them. Configuration is documented structure-only — no credential and nothing a secret scanner such as gitleaks would flag. Shows the full draft and waits for explicit validation before writing the file. Use whenever the user wants a README created, rewritten, standardised or brought up to date — e.g. 'cria o README', 'faz o readme deste projeto', 'atualiza o README', 'write the README', 'document this repo', 'standardise the readme'."
+description: "Write (or rewrite) a project's root README.md from the house template — an optional banner (the user's image, or an SVG it designs only when asked), the badge wall, table of contents, tech-stack table, architecture diagram + layer table, annotated solution layout, module/domain map, patterns & conventions digest, runnable getting-started, testing, code style, observability, documentation map and contributing/branching sections — adapted to whatever the project actually is (any stack: .NET, Node/Next.js, Python, Java, Go, mobile, library, CLI, monorepo). It investigates the repository first and documents only what it can prove from real files; it never invents a command, a version or a URL, and deletes the sections the project has no answer for instead of stubbing them. Configuration is documented structure-only — no credential and nothing a secret scanner such as gitleaks would flag. Shows the full draft and waits for explicit validation before writing the file. Use whenever the user wants a README created, rewritten, standardised or brought up to date — e.g. 'cria o README', 'faz o readme deste projeto', 'atualiza o README', 'write the README', 'document this repo', 'standardise the readme'."
 allowed-tools: ["Bash", "Read", "Grep", "Glob", "Write", "Edit", "AskUserQuestion"]
 ---
 
@@ -142,6 +142,30 @@ Read [`reference/structure.md`](reference/structure.md), then decide the section
 - If anything material stayed ambiguous after Step 3 — and only then — ask the user with
   `AskUserQuestion`: one question per genuinely blocking gap, recommended default first.
 
+**Banner.** If the existing README already shows a banner image at the top, keep it unless the user
+says otherwise. If not, ask with `AskUserQuestion` whether the README should open with a banner:
+
+1. **I have an image** — ask for its path in the repo (or a URL) and use it as is.
+2. **Create one** — only on this answer, design an SVG banner: the project's name, its one-line
+   tagline (from the README, the manifest description or the user — never invented), and at most a
+   simple mark or a few labels that are true of the project (its modules, its stack). Make two
+   versions, `assets/banner-dark.svg` and `assets/banner-light.svg` (or the repo's existing assets
+   folder), 1280×320, system fonts only, no external references, and an accessible `<title>`/`<desc>`.
+   Render both and **show them to the user before using them**; only approved files are written.
+3. **No banner** — the README starts with the title, as the template does.
+
+A banner goes above the title, before the badge wall, as a theme-aware picture:
+
+```html
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+  <img alt="<Project> — <tagline>" src="assets/banner-light.svg" width="100%">
+</picture>
+```
+
+With a single image, a plain `<img alt="…" src="…" width="100%">` is enough. Never pull a banner
+from another project.
+
 ## Step 5 — Write the draft
 
 Read [`reference/template.md`](reference/template.md), [`reference/style.md`](reference/style.md),
@@ -157,7 +181,7 @@ Then self-check, and fix before proposing. Start with the template's own deletio
       and if the repo runs gitleaks, run gitleaks over the draft too. Every hit must resolve to a
       `<PLACEHOLDER>`, an environment-variable name or a table row. Rewrite the line; never allowlist it.
 - [ ] Every ToC entry resolves to a real heading, with a correct GitHub anchor slug.
-- [ ] Every relative link points at a path that exists (verify each one).
+- [ ] Every relative link points at a path that exists (verify each one) — banner images included.
 - [ ] Every badge label matches the version in the tech-stack table.
 - [ ] Every *Solution layout* line is a real directory or file.
 - [ ] Every mermaid arrow reflects a real dependency.
