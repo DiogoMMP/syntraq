@@ -28,7 +28,7 @@ allowed-tools: ["Bash", "Read", "Grep", "Glob", "Write", "Edit", "Skill", "AskUs
    - **create** — no `AGENTS.md` yet;
    - **update** — one exists (go to "Update mode" below). Other agents' rule files and an existing `CLAUDE.md` are inputs: offer to bring their content in, so there is one source of truth.
 
-2. **First draft from `/init`** — only when the repo already has code **and** has neither a `CLAUDE.md` nor an `AGENTS.md`. Run the `init` skill: it analyses the codebase and writes a `CLAUDE.md` with the commands and conventions it finds. Treat that file as raw material: its content moves into the `AGENTS.md` draft, and the `CLAUDE.md` it created this session is removed at the end (step 8 decides whether a one-line `CLAUDE.md` replaces it). Never run `/init` over an existing `CLAUDE.md`. In an empty repo, skip it.
+2. **First draft from `/init`** — only when the repo already has code **and** has neither a `CLAUDE.md` nor an `AGENTS.md`. Run the `init` skill: it analyses the codebase and writes a `CLAUDE.md` with the commands and conventions it finds. Treat that file as raw material only: read it, carry what's useful into the `AGENTS.md` draft, and **delete it right away**, before the interview — so nothing unapproved is left in the repo if the user rejects the draft or the flow stops. Step 8 decides, with the user, whether a one-line `CLAUDE.md` is written at the end. Never run `/init` over an existing `CLAUDE.md`. In an empty repo, skip it.
 
 3. **Investigate what `/init` misses.** Read, don't guess:
    - **manifests and scripts** — `package.json` scripts, `Makefile`, `*.csproj`/`*.sln`, `pyproject.toml`, `pom.xml`/`build.gradle`, `go.mod`, `Cargo.toml`, `docker-compose*.yml` — for the real build/test/lint/format/run commands per subproject, and how to run a single test;
@@ -58,7 +58,7 @@ allowed-tools: ["Bash", "Read", "Grep", "Glob", "Write", "Edit", "Skill", "AskUs
      | Small personal project, library or tool with one maintainer and no release train | **GitHub flow**: `main` always working; every change on a short-lived `feature/*` or `fix/*` branch merged by PR; no `develop`. |
      | A scratch repo or notes with no CI and nothing to protect | Committing on `main` is acceptable — say what is given up (review, a clean revert point). |
 
-     Whatever the choice: Conventional Commits; branch prefixes that match the commit types; and if CI enforces something (a branch guard, a PR-title check), the file states it as a rule.
+     Whatever the choice: record the commit convention the repo actually uses (from step 3), and recommend Conventional Commits — with branch prefixes that match the commit types — only as a suggestion the user can turn down; if CI enforces something (a branch guard, a PR-title check), the file states it as a rule.
    - Write down exactly what the user decides — `commit-push` and `create-pr` read this section and follow it over their own defaults.
 
 6. **Apply the cut** (see above) to the whole draft. Move what only matters for one subproject to a proposed nested `AGENTS.md` in it; turn long procedures into a suggestion for a skill; keep one statement of each rule. Where the template's placeholders have no answer, delete the section.
@@ -68,7 +68,6 @@ allowed-tools: ["Bash", "Read", "Grep", "Glob", "Write", "Edit", "Skill", "AskUs
 8. **Make Claude Code read it.** Claude Code reads `AGENTS.md` on its own only when there is no `CLAUDE.md`/`.claude/CLAUDE.md`/`CLAUDE.local.md` in the directory or above; with one, it reads only that file unless it imports `AGENTS.md`.
    - A `CLAUDE.md` exists → offer to add `@AGENTS.md` at its top (and to move anything it repeats into `AGENTS.md`). Write only on a yes.
    - No `CLAUDE.md` → ask whether to create a one-line `CLAUDE.md` containing `@AGENTS.md`, which also covers older Claude Code versions and sessions that can't read `AGENTS.md` directly.
-   - Remove the `CLAUDE.md` that `/init` created in step 2 unless it's the one-line import the user just chose.
 
 9. **Report**: the files written or changed, the commands confirmed by running them, what the user decided about the git workflow, nested files proposed, and the next step (`commit-push`).
 
