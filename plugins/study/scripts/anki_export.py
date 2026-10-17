@@ -31,7 +31,8 @@ Deck source format — frontmatter, then one block per card:
 Markdown supported in cards: **bold**, *italic*, `code`, $inline$ and $$display$$ math (turned
 into Anki's MathJax), ![](image) (only in .apkg), [[wiki links]] (plain text), line breaks.
 
-Exit codes: 0 ok, 2 bad input, 5 genanki missing for --apkg.
+Exit codes: 0 ok, 2 bad input (including two different images with the same file name, which Anki
+can't tell apart), 5 genanki missing for --apkg.
 """
 
 import argparse
@@ -157,6 +158,7 @@ def export_apkg(source, meta, cards):
     )
     deck = genanki.Deck(stable_id(deck_name), deck_name)
     media_files = []
+    by_name = {}  # Anki stores media flat, by file name: two different files can't share one
     for card in cards:
         media = []
         fields = [to_html(card["front"], media), to_html(card["back"], media)]
@@ -164,6 +166,11 @@ def export_apkg(source, meta, cards):
             full = (source.parent / path).resolve()
             if not full.exists():
                 sys.stderr.write(f"image not found for {card['id']}: {path}\n")
+                sys.exit(2)
+            other = by_name.setdefault(full.name, full)
+            if other != full:
+                sys.stderr.write(f"two different images are both named {full.name} ({other} and {full}) — "
+                                 f"Anki keeps media by file name only; rename one of them\n")
                 sys.exit(2)
             media_files.append(str(full))
         model = basic if card["type"] == "basic" else cloze

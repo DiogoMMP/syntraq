@@ -75,7 +75,7 @@ Turns a course's past exams into durable knowledge in the wiki: what the exam lo
        - raw/<candidates the user said are not exams>
    ```
 
-8. **Write the question catalog** — `Question catalog of <course>` translated (e.g. "Catálogo de perguntas de ENGCIA"), next to the exams article, following `templates/question-catalog.md`: one row per question or sub-question, with a stable id (sitting letter + year + question, e.g. `N23-P3b`, `R21-P2`; `M-P1` for a model exam), link to the paper, topic, kind, marks, the one-line summary and a link to its solution when there is one. Ids never change once given, so other skills and notes can cite them.
+8. **Write the question catalog** — `Question catalog of <course>` translated (e.g. "Catálogo de perguntas de ENGCIA"), next to the exams article, following `templates/question-catalog.md`: one row per question or sub-question, with a stable id (sitting letter + year + question, e.g. `N23-P3b`, `R21-P2`; `M-P1` for a model exam), link to the paper, topic, kind, marks, the one-line summary and a link to its solution when there is one. Ids never change once given, so other skills and notes can cite them. When a course has more than one paper of the same kind in the same school year (two tests, two model exams, a second recurso), the first keeps the plain prefix and each later one gets a letter after the year — `T23-P1`, then `T23b-P1`, `T23c-P1`; for model exams, `M-P1`, then `Mb-P1` — in the order the papers are dated, or found when they have no date. Never rename an id already issued to make room for a new paper.
 
 9. **Keep the KB consistent.**
    - Add or update a row in `wiki/sources.md` for every paper processed (summary: "exam

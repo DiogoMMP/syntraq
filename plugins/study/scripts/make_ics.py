@@ -88,8 +88,11 @@ def parse(source):
             days.append(current)
             continue
         task = TASK.match(line)
-        if task and current is not None and task.group(1) == " ":
-            current["tasks"].append(plain(task.group(2).strip()))
+        if task and current is not None:
+            if task.group(1) == " ":
+                current["tasks"].append(plain(task.group(2).strip()))
+            else:
+                current["done"] = True
     days = [d for d in days if d["tasks"]]
     if not days and not exams:
         sys.stderr.write("no study days or exams found\n")
@@ -106,19 +109,22 @@ def parse(source):
 def events(title, label, days, exams, start):
     out = []
     for day in days:
-        mins = day["minutes"] or sum(minutes(t) for t in day["tasks"])
+        remaining = sum(minutes(t) for t in day["tasks"])
+        # once some of the day's tasks are checked off, the block lasts only as long as what's left
+        mins = (remaining or day["minutes"]) if day.get("done") else (day["minutes"] or remaining)
         first = re.sub(r"\s*·[^·]*$", "", day["tasks"][0])
         first = re.sub(r"\s+—\s+`[^`]+`.*$", "", first)
         summary = first + (f" (+{len(day['tasks']) - 1})" if len(day["tasks"]) > 1 else "")
         event = {"summary": summary, "description": "\n".join(f"- {t}" for t in day["tasks"]),
-                 "date": day["date"]}
+                 "date": day["date"], "uid": f"study|{day['date']}"}
         if start and mins:
             event["start"] = f"{day['date']}T{start}"
             begin = dt.datetime.fromisoformat(event["start"])
             event["end"] = (begin + dt.timedelta(minutes=mins)).isoformat(timespec="minutes")
         out.append(event)
     for exam in exams:
-        event = {"summary": f"{label} — {exam['course']}", "description": title, "date": exam["date"]}
+        event = {"summary": f"{label} — {exam['course']}", "description": title, "date": exam["date"],
+                 "uid": f"exam|{exam['course']}|{exam['date']}"}
         if exam["time"]:
             event["start"] = f"{exam['date']}T{exam['time']:0>5}"
             hours = float((exam["hours"] or "2").replace(",", "."))
@@ -148,11 +154,15 @@ def fold(line):
 
 
 def to_ics(source, items):
-    stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    now = dt.datetime.now(dt.timezone.utc)
+    stamp = now.strftime("%Y%m%dT%H%M%SZ")
+    sequence = int(now.timestamp() // 60)  # a later export is a newer revision of the same events
     lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//study-plugin//study-plan//EN", "CALSCALE:GREGORIAN"]
     for item in items:
-        uid = hashlib.sha1(f"{source.name}|{item['date']}|{item['summary']}".encode("utf-8")).hexdigest()
-        lines += ["BEGIN:VEVENT", f"UID:{uid}@study-plugin", f"DTSTAMP:{stamp}"]
+        # the UID depends only on the plan and the day (or exam), so re-importing an updated plan
+        # updates the same events instead of adding new ones when tasks change
+        uid = hashlib.sha1(f"{source.name}|{item['uid']}".encode("utf-8")).hexdigest()
+        lines += ["BEGIN:VEVENT", f"UID:{uid}@study-plugin", f"DTSTAMP:{stamp}", f"SEQUENCE:{sequence}"]
         if "start" in item:
             begin = dt.datetime.fromisoformat(item["start"]).strftime("%Y%m%dT%H%M%S")
             end = dt.datetime.fromisoformat(item["end"]).strftime("%Y%m%dT%H%M%S")

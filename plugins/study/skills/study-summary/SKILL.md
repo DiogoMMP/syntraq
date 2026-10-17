@@ -66,7 +66,7 @@ A summary to print and study from: everything the course asks for, weighted by w
    - Exit code 3 means pandoc is missing — go back to step 2. Exit code 4 means pandoc rejected the source — fix the markdown and run it again.
    - If the last line says the PDF was skipped (no Word or LibreOffice), report that the `.docx` is ready and the PDF isn't.
 
-9. **Index it.** Add one short row to the index table in `outputs/README.md` (type: summary, what for: one sentence, status: `final`), or update the existing row's date and version.
+9. **Index it.** Add one short row to the index table in `outputs/README.md` (type: summary, what for: one sentence, status: the KB's word for *final*, as listed in `outputs/README.md` — e.g. `final` in `pt-PT`), or update the existing row's date and version.
 
 10. **Keep the wiki the single source of truth.** A summary is never promoted into the wiki as a whole. If writing it surfaced something the wiki doesn't say yet (a definition, an example, a detail from `raw/`), offer to capture it as a note (`capture-note`) so `compile-wiki` folds it into the wiki — then the next version of the summary will carry it from there.
 

@@ -56,7 +56,7 @@ Solves a paper the way the course would: with its methods, its notation and its 
 
 10. **Render** with `python <plugin>/scripts/render.py <file.md>` (the plugin's `scripts/` folder, two levels above this skill). Exit code 3: pandoc missing (back to step 8); 4: fix the markdown.
 
-11. **Index it.** One short row in the index table of `outputs/README.md` (type: solution, what for: one sentence, status: `final`), or update the existing row's date and version.
+11. **Index it.** One short row in the index table of `outputs/README.md` (type: solution, what for: one sentence, status: the KB's word for *final*, as listed in `outputs/README.md` — e.g. `final` in `pt-PT`), or update the existing row's date and version.
 
 12. **Keep the KB consistent.**
     - Never promote a solution into the wiki. If solving surfaced something the wiki doesn't say (a method detail, a worked example), offer to capture it as a note.

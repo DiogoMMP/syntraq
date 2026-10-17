@@ -48,9 +48,9 @@ Marks what the user wrote the way the exam would, explains every lost mark, and 
    ├── <progress>-<course>.md
    └── <attempts>/
        ├── NN-<paper>.md / .docx / .pdf
-       └── NN-<paper>-original.<ext>
+       └── NN-<paper>-original-1.<ext>, -original-2.<ext>, …
    ```
-   with the names in the KB's language (e.g. `progresso-engcia/tentativas/01-simulado-1.pdf`). `NN` is the next attempt number for the course (01, 02, …); `<paper>` a short slug of what was attempted. Write the assessment following `templates/assessment.md` — its frontmatter records each question's topic, marks, score and mistake kinds, which is what the progress record is built from. Copy the user's original files next to it as `NN-<paper>-original.<ext>` (only files they gave you; never anything from `raw/`). Render the assessment with `python <plugin>/scripts/render.py <file.md>` (pandoc checked as in `study-summary` step 2 — ask before installing it; without it keep only the `.md`).
+   with the names in the KB's language (e.g. `progresso-engcia/tentativas/01-simulado-1.pdf`). `NN` is the next attempt number for the course (01, 02, …); `<paper>` a short slug of what was attempted. Write the assessment following `templates/assessment.md` — its frontmatter records each question's topic, marks, score and mistake kinds, which is what the progress record is built from. Copy the user's original files next to it, one per file and in the order they were given — `NN-<paper>-original-1.<ext>`, `NN-<paper>-original-2.<ext>`, … — and list every copy in the assessment's `original:` field (only files they gave you; never anything from `raw/`). Render the assessment with `python <plugin>/scripts/render.py <file.md>` (pandoc checked as in `study-summary` step 2 — ask before installing it; without it keep only the `.md`).
 
 9. **Rebuild the progress record** `<progress>-<course>.md` exactly as `../../references/progress.md` describes (the plugin's `references/` folder): rebuilt from the frontmatter of every assessment in `<attempts>/` and every quiz session in `<quizzes>/`, never patched — by topic (attempts, last three, quiz, state, recurring mistakes), study priority crossed with exam weight, most frequent mistakes, and the history. Follow `templates/progress.md` for its layout.
 

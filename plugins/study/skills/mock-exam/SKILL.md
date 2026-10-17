@@ -61,7 +61,7 @@ A practice exam that feels like the real one: the same structure, marks, duratio
 
 9. **Render** both files with `python <plugin>/scripts/render.py <file.md>` (the plugin's `scripts/` folder, two levels above this skill). `toc: false` in the templates keeps the table of contents out. Exit code 3 means pandoc is missing (back to step 3); 4 means the markdown needs fixing.
 
-10. **Index it.** One short row per mock exam in the index table of `outputs/README.md` (type: mock exam, what for: one sentence, status: `final`), pointing at its folder.
+10. **Index it.** One short row per mock exam in the index table of `outputs/README.md` (type: mock exam, what for: one sentence, status: the KB's word for *final*, as listed in `outputs/README.md` — e.g. `final` in `pt-PT`), pointing at its folder.
 
 11. **Keep the wiki the single source of truth.** Never promote a mock exam into the wiki. If writing one surfaced something the wiki doesn't say, offer to capture it as a note.
 

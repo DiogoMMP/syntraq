@@ -10,7 +10,9 @@ attempt: {{NN}}
 attempt_date: {{DATE}}
 paper: path/to/the/paper (raw/… or outputs/…)
 reference: mock-solutions | official | solve-exam | generated
-original: {{NN}}-{{SLUG}}-original.jpg
+original:
+  - {{NN}}-{{SLUG}}-original-1.jpg
+  - {{NN}}-{{SLUG}}-original-2.jpg
 scale: 20
 estimated_grade: 13.4
 questions:
