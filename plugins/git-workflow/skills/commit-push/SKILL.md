@@ -107,9 +107,7 @@ Not every commit bumps a version — most don't. Check before assuming either wa
 
 4. **When asking, use `AskUserQuestion`.** Show the current version and offer patch / minor / major — with a recommendation derived from the Conventional Commits type (`fix` → patch, `feat` → minor, a `BREAKING CHANGE` footer or `!` → major) — plus "don't bump". Semver is a judgment call about the actual change, not something to infer from a diff and apply silently.
 
-5. **If the user says bump:** update every file that holds this same version number, so they don't drift — prefer the ecosystem's own bump command when one exists (`npm version --no-git-tag-version
-   <bump>`, `cargo set-version`, `poetry version <bump>`) over hand-editing, and hand-edit only where
-   no such command exists (e.g. a `.csproj`'s `<Version>`, or `.claude-plugin/plugin.json`). Decide whether it's its own commit (`chore(release): bump version to X.Y.Z` — the norm when cutting a release on `release/*`) or folded into the feature/fix commit it belongs to (when the project bumps per-change), and say which and why when you show the proposal in Step 6.
+5. **If the user says bump:** update every version file that belongs to the package being changed, so they don't drift — and only those: in a repo with several packages or plugins (a monorepo, a plugin marketplace), another package that happens to have the same version number is not part of this release. Prefer the ecosystem's own bump command when one exists (`npm version --no-git-tag-version <bump>`, `cargo set-version`, `poetry version <bump>`) over hand-editing, and hand-edit only where no such command exists (e.g. a `.csproj`'s `<Version>`, or `.claude-plugin/plugin.json`). Decide whether it's its own commit (`chore(release): bump version to X.Y.Z` — the norm when cutting a release on `release/*`) or folded into the feature/fix commit it belongs to (when the project bumps per-change), and say which and why when you show the proposal in Step 6.
 
 ---
 
@@ -175,7 +173,8 @@ Print the message(s) in chat **verbatim** — exactly the bytes that will land i
 >
 > A promo line with no price made the subtotal NaN and blanked the summary. Treat a missing price as 0 and cover it with a test.
 >
-> Refs: #12 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+> Refs: #12
+> Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 > ```
 
 Then ask for validation and **end the turn**. Do not run `git commit` in this turn.
