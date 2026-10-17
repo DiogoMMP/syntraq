@@ -1,6 +1,6 @@
 {
   "name": "dev-tools",
-  "description": "Development skills: implement changes end to end with a written record, scaffold Clean Architecture, write tests and generate READMEs.",
+  "description": "Development skills: implement changes end to end with a written record, scaffold Clean Architecture, write tests, generate READMEs and write AGENTS.md files with the user.",
   "version": "1.0.1",
   "author": {
     "name": "Diogo Pereira",
