@@ -12,12 +12,12 @@ The "lint" step from Karpathy's [LLM Knowledge Bases](https://gist.github.com/ka
 
 1. **Find the knowledge base.** Same discovery as `compile-wiki`: look for `wiki/` next to `KB_GUIDE.md` nearby, ask if not found or ambiguous. Read the frontmatter for `mode`.
 
-2. **Check for broken internal links.** Grep every `.md` file under `wiki/` (excluding `wiki/_geral/`, which belongs to another vault) for `[[Article Name]]` wikilinks and relative markdown links. For each, verify the target exists — as a `.md` file somewhere under `wiki/` (including `wiki/_geral/` for links that intentionally point there) for wikilinks, or as a real path for relative links. Flag anything that doesn't resolve.
+2. **Check for broken internal links.** Grep every `.md` file under `wiki/` (excluding `wiki/_geral/`, which belongs to another vault) for `[[Article Name]]` wikilinks and relative markdown links. For each, verify the target exists — as a `.md` file somewhere under `wiki/` (including `wiki/_geral/` for links that intentionally point there) for wikilinks, or as a real path for relative links. Ignore anything inside inline code (`` `…` ``) or fenced code blocks — a Prolog list like `[[a,b]]` or a code sample is not a link. Flag anything that doesn't resolve.
 
 3. **Check for orphaned articles.** List every article under `wiki/` (excluding `index.md`, `Estrutura.md`, `sources.md`, `README.md`, and anything under `_geral/`). Flag any that aren't linked from `wiki/index.md` or from any other article — they exist but nothing points to them.
 
 4. **Check for dangling manifest entries.**
-   - Research mode: rows in `wiki/sources.md` whose listed article(s) no longer exist, or whose source file is gone from `raw/`.
+   - Research mode: rows in `wiki/sources.md` whose listed article(s) no longer exist, or whose source file is gone from `raw/`. A row may name several files, a folder, or a glob (`src/**`, `{a,b}/*.md`): check each named path, and flag a glob only when it matches nothing. Watch for commas that belong to a folder or file name rather than separating files — when a path only resolves with the comma kept, it is one path. Don't report a row as missing on a parsing doubt; say it couldn't be checked.
    - Both modes: compiled notes whose listed `articles:` no longer exist, and (research mode) notes whose `source:` points to a `raw/` file that doesn't exist.
 
    **Notes in the wrong place** (both modes). The top level of `notes/` is the inbox and its subfolders are the archive (see `notes/README.md`). Flag notes at the top level that already say `status: compiled` (older KBs, or a move that didn't happen) — the fix is moving each to the area of its `articles:` and updating the wiki links that cite it — and notes inside a subfolder that aren't `status: compiled` (they would never be picked up).
