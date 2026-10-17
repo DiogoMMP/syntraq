@@ -25,6 +25,12 @@
       "source": "./plugins/knowledge-base",
       "description": "Personal LLM knowledge base: knowledge-base, compile-wiki, capture-note, adr-new, resume, wiki-lint.",
       "category": "productivity"
+    },
+    {
+      "name": "study",
+      "source": "./plugins/study",
+      "description": "Study skills on top of a research knowledge base: exam-map, study-summary, mock-exam, solve-exam, correct-attempt, quiz, flashcards, study-plan.",
+      "category": "productivity"
     }
   ]
 }

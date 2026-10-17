@@ -16,7 +16,8 @@ outputs/<area>/
 
 - `<area>` is one of the areas `../wiki/` already uses (a course, a project, a topic). Don't invent a grouping the wiki doesn't have. What fits no area goes in `general/`. If the wiki has no areas, drop the `<area>/` level.
 - Pick the purpose folder by what the output is **for**, not by its file type. The type (summary, chart, email, slides…) is a column in the index, not a folder.
-- Inside `study/`, `deliverables/` and `answers/`, name files `YYYY-MM-DD-slug.<ext>`. A set of files that belong together (a script + the image it generates) gets its own `YYYY-MM-DD-slug/` subfolder.
+- Inside `study/`, each piece of study material (a summary, a mock exam, a solved exam) is its own folder named by what it covers, without a date — e.g. `study/summary-<scope>/` holding the `.md` source, the `.docx` and the `.pdf`. The name never changes: the files always hold the latest version, and the version number and date are printed on the document itself.
+- Inside `deliverables/` and `answers/`, name files `YYYY-MM-DD-slug.<ext>`. A set of files that belong together (a script + the image it generates) gets its own `YYYY-MM-DD-slug/` subfolder.
 - In `work/<name>/`, each version is a frozen folder: once `v3/` exists, `v2/` is not edited. The changelog lives in `work/<name>/README.md`, not in the index below.
 - Create folders when the first output needs them — don't pre-create empty ones.
 
@@ -25,6 +26,7 @@ outputs/<area>/
 - An output is a view of the wiki made for a purpose. It links to the articles it is based on instead of copying them.
 - If producing an output uncovers something durably true that the wiki doesn't say yet, put that in the wiki (through a note or `compile-wiki`), and keep only the purpose-specific part here.
 - Promoting an output means folding into the wiki **only what is new** — then set its status to `promoted → [[Article]]`.
+- **The exception is `study/`.** Study material is made to be printed and studied from, so it does contain the material — but it is always derived from the wiki (and `raw/`), and is never promoted into the wiki as a whole. Anything new it surfaces goes into the wiki through a note.
 
 ## What each output is based on
 
