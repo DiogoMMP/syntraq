@@ -45,13 +45,16 @@ If there is nothing to commit, say so and stop. Do not invent work.
 | Bugfix | `bugfix/<slug>` | Fixing something in a release candidate before it ships |
 | Release | `release/<version>` | Preparing a version (e.g. `release/1.2.0`) |
 | Hotfix | `hotfix/<slug>` | Urgent fixes on top of `main` |
+| Typed work branch | `fix/`, `chore/`, `docs/`, `refactor/`, `test/`, `ci/`, `build/`, `perf/`, `style/`, `revert/` + `<slug>` | The Conventional Commits types used as prefixes; `fix/` is the usual bug-fix branch in repos that don't cut release branches |
 
 A branch may optionally reference a GitHub issue by leading its slug with the number (e.g. `feature/12-dark-mode`) — this is a convenience, never a requirement. Personal projects rarely track every change as an issue; don't ask for one.
 
+**The repo's own workflow wins.** If `AGENTS.md` or `CLAUDE.md` describes the branching model (direct commits on `main`, no `develop`, which prefixes exist), follow it over this table — and over the checks below.
+
 Checks:
 
-- **On `feature/*`, `bugfix/*`, `release/*`, `hotfix/*`** → proceed normally.
-- **On `main` or `develop`** → this is where GitFlow expects PRs, not direct commits. Ask with `AskUserQuestion` before going further, offering: (a) create `feature/<slug>` from here and carry the changes over, (b) commit directly on this branch anyway. **Exception:** if the repo's `CLAUDE.md`, a project memory, or the user has already stated that this repo commits directly to `main`, skip the question and commit — do not re-ask every time.
+- **On `feature/*`, `bugfix/*`, `release/*`, `hotfix/*` or a typed work branch (`fix/*`, `chore/*`, `docs/*`, …)** → proceed normally.
+- **On `main` or `develop`** → this is where GitFlow expects PRs, not direct commits. Ask with `AskUserQuestion` before going further, offering: (a) create `feature/<slug>` from here and carry the changes over, (b) commit directly on this branch anyway. **Exception:** if the repo's `AGENTS.md` or `CLAUDE.md`, a project memory, or the user has already stated that this repo commits directly to `main`, skip the question and commit — do not re-ask every time.
 - **Detached HEAD** → stop and tell the user; do not commit.
 
 If the user picks (a): `git switch -c feature/dark-mode` (features branch from `develop`, hotfixes from `main`). Never create the branch without being asked to.
@@ -128,7 +131,7 @@ Co-Authored-By: Claude <model> <noreply@anthropic.com>
 - **subject** — imperative mood ("add", not "added"/"adds"), lowercase start, no trailing period, ≤ 72 chars. Describes the change, not the process ("fix null check on cart total", never "changes requested in review").
 - **body** — optional; include it when the *why* isn't obvious from the subject. Explain intent, trade-offs, and anything a reviewer would otherwise have to ask. Skip it for trivial commits.
 - **Refs** — check whether this change has an associated GitHub issue: derivable from the branch name (e.g. `feature/12-dark-mode` → `#12`) or mentioned anywhere in the conversation. **If one exists, it must be referenced** — `Refs: #12`, or `Closes: #12` only if the user says the issue is done; don't drop a known issue silently. Only the *absence* of one is optional to leave as-is — never ask the user to open an issue just to fill this line.
-- **language** — commit messages in **English**, always, regardless of the chat language, unless the repo's `git log` clearly shows otherwise.
+- **language** — commit messages in **English** by default, regardless of the chat language — unless the repo's `AGENTS.md`/`CLAUDE.md` names another language for commits, or its `git log` clearly shows one. Then write in that language (types and scopes stay as the repo uses them).
 
 ### The Co-Authored-By trailer — exact rules
 

@@ -64,7 +64,10 @@ The PR body must describe **the whole branch**, not just the last commit. Read e
 | `bugfix/<slug>` | the `release/*` it branched from |
 | `release/<version>` | `main` |
 | `hotfix/<slug>` | `main` |
+| `fix/`, `chore/`, `docs/`, `refactor/`, `test/`, `ci/`, `build/`, `perf/`, `style/`, `revert/` + `<slug>` | `develop` |
 
+- **The repo's own workflow wins.** If `AGENTS.md` or `CLAUDE.md` states where each branch type goes (or that there is no `develop`), use that instead of this table.
+- **No `develop` on the remote** (GitHub flow — check `git ls-remote --heads origin develop`): every work branch targets the repo's default branch (`gh repo view --json defaultBranchRef -q .defaultBranchRef.name`); say so in the gate.
 - Confirm the resolved base in the gate at Step 5 — **never guess it silently**.
 - For a `bugfix/*`, find the parent release branch (`git branch -r --contains` on the merge base, or ask) instead of defaulting to `develop`.
 - If the branch's slug leads with a number (`feature/12-dark-mode`), treat `12` as a GitHub issue and link it. This is a convenience, not a requirement — most personal-project branches carry no issue number, and that's fine; never ask the user to supply one just to fill this in.
