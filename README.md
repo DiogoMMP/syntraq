@@ -1,71 +1,139 @@
-# ai-skills
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+  <img alt="Syntraq — Power up your agents" src="assets/banner-light.svg" width="100%">
+</picture>
 
-Plugin de [Claude Code](https://code.claude.com) com uma coleção pessoal de skills.
+# Syntraq
+
+![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20marketplace-D97757?logo=anthropic&logoColor=white)
+![Plugins](https://img.shields.io/badge/plugins-4-7C5CFF)
+![Skills](https://img.shields.io/badge/skills-21-22D3EE)
+![Commits](https://img.shields.io/badge/commits-Conventional-FE5196?logo=conventionalcommits&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
+Marketplace de plugins para o [Claude Code](https://code.claude.com): skills que levam o agente do pedido
+à entrega — commits e pull requests com aprovação em cada passo, mudanças implementadas com registo escrito,
+knowledge bases mantidas por LLM e estudo para exames a partir dessa knowledge base.
+
+Cada plugin instala-se à parte e tem o seu próprio README com a descrição completa de cada skill.
+
+---
+
+## Índice
+
+- [Instalação](#instalação)
+- [Plugins](#plugins)
+- [Estrutura do repositório](#estrutura-do-repositório)
+- [Contribuir](#contribuir)
+- [Créditos](#créditos)
+- [Licença](#licença)
+
+---
 
 ## Instalação
 
-Este repositório é uma marketplace com 3 plugins:
+Adiciona o marketplace uma vez e instala só os plugins que queres:
 
-| Plugin | Skills |
+```text
+/plugin marketplace add DiogoMMP/syntraq
+/plugin install git-workflow@syntraq
+/plugin install dev-tools@syntraq
+/plugin install knowledge-base@syntraq
+/plugin install study@syntraq
+```
+
+Para experimentar um plugin a partir de um clone local, sem o instalar:
+
+```bash
+claude --plugin-dir ./plugins/dev-tools
+```
+
+---
+
+## Plugins
+
+### [`git-workflow`](plugins/git-workflow/README.md) — Git & GitHub
+
+| Skill | O que faz |
 | :--- | :--- |
-| `git-workflow` | `commit-push`, `create-pr` |
-| `dev-tools` | `implement-change`, `clean-architecture`, `write-tests`, `create-readme`, `create-agents-md` |
-| `knowledge-base` | `knowledge-base`, `compile-wiki`, `capture-note`, `adr-new`, `resume`, `wiki-lint` |
+| `commit-push` | Cria commits (Conventional Commits) e faz push, seguindo GitFlow |
+| `create-pr` | Abre um pull request preenchendo o template do repositório |
+
+### [`dev-tools`](plugins/dev-tools/README.md) — Desenvolvimento
+
+| Skill | O que faz |
+| :--- | :--- |
+| `implement-change` | Implementa uma feature, bugfix ou hotfix ponta a ponta, com registo escrito |
+| `create-readme` | Escreve ou reescreve o README.md raiz no formato da casa |
+| `create-agents-md` | Escreve ou atualiza o `AGENTS.md` do repositório, em conjunto contigo |
+| `clean-architecture` | Cria (ou reorganiza) um projeto em Clean Architecture |
+| `write-tests` | Escreve testes unitários e/ou de integração, em qualquer stack |
+
+### [`knowledge-base`](plugins/knowledge-base/README.md) — Knowledge base pessoal
+
+| Skill | O que faz |
+| :--- | :--- |
+| `knowledge-base` | Cria a estrutura de pastas de uma knowledge base pessoal |
+| `compile-wiki` | Compila/atualiza a `wiki/` a partir de notas e do git |
+| `capture-note` | Grava rapidamente uma nota solta em `notes/` |
+| `adr-new` | Cria uma nota ADR de decisão arquitetural |
+| `resume` | Briefing para retomar um projeto pessoal parado |
+| `wiki-lint` | Health check da `wiki/` (links partidos, órfãos, etc.) |
+
+### [`study`](plugins/study/README.md) — Estudo
+
+| Skill | O que faz |
+| :--- | :--- |
+| `exam-map` | Mapeia o que sai nos exames de uma cadeira |
+| `study-summary` | Escreve um resumo completo para imprimir, em Word e PDF |
+| `mock-exam` | Cria simulados de exame com enunciado e correção separados |
+| `solve-exam` | Resolve exames e fichas só com a matéria da cadeira |
+| `correct-attempt` | Corrige as tuas tentativas e regista os pontos fracos |
+| `quiz` | Tutor no chat que te faz perguntas, focado nos pontos fracos |
+| `flashcards` | Cria flashcards para o Anki |
+| `study-plan` | Faz o plano de estudo, dia a dia, até aos exames |
+
+---
+
+## Estrutura do repositório
 
 ```
-/plugin marketplace add DiogoMMP/ai-skills
-/plugin install git-workflow@ai-skills
-/plugin install dev-tools@ai-skills
-/plugin install knowledge-base@ai-skills
-```
-
-Localmente, durante desenvolvimento: `claude --plugin-dir ./plugins/dev-tools`
-
-## Estrutura
-
-```
-ai-skills/
-├── .claude-plugin/
-│   └── marketplace.json
+syntraq/
+├── .claude-plugin/marketplace.json   # o catálogo: nome do marketplace e a lista de plugins
+├── assets/                           # banner do README (versões clara e escura)
 └── plugins/
     └── <plugin>/
-        ├── .claude-plugin/plugin.json
-        └── skills/<skill>/SKILL.md
+        ├── .claude-plugin/plugin.json   # nome, descrição e versão do plugin
+        ├── README.md                    # as skills do plugin em detalhe
+        ├── skills/<skill>/SKILL.md      # cada skill, com templates/ ou reference/ quando precisa
+        └── scripts/                     # scripts partilhados pelas skills (só no study)
 ```
 
-## Skills
+---
 
-### `git-workflow` — Git & GitHub
+## Contribuir
 
-| Skill | Resumo | Descrição |
-| :--- | :--- | :--- |
-| [commit-push](plugins/git-workflow/skills/commit-push/SKILL.md) | Cria commits (Conventional Commits) e faz push, seguindo GitFlow | Lê o estado do repositório, valida a branch contra o modelo GitFlow (`main`/`develop`/`feature`/`bugfix`/`release`/`hotfix`), agrupa o diff em commits coerentes e mostra a(s) mensagem(ns) propostas no chat, aguardando validação explícita antes de commitar — e pergunta separadamente, só depois, se deve fazer push. Uma issue do GitHub pode ser referenciada (`Refs: #12`) mas nunca é obrigatória. |
-| [create-pr](plugins/git-workflow/skills/create-pr/SKILL.md) | Abre um pull request preenchendo o template do repositório | Confirma que a branch já está commitada e pushed (nunca commita nem faz push), resolve a branch base a partir do GitFlow, lê primeiro o template de PR do repositório (ou, se o repositório não tiver nenhum, usa o template por defeito que vem com a skill, adaptando os comandos de build e testes ao projeto) e preenche-o com base no diff real — em português por defeito — linkando os registos em `docs/changes/` que a branch toca. Mostra o título e o corpo completos e só corre `gh pr create` depois de aprovação explícita. |
+- **Branches** — nada vai diretamente para a `main`: cada trabalho vive numa `feature/<slug>` e entra por
+  pull request (`create-pr`).
+- **Commits** — Conventional Commits em inglês, com o tipo e o plugin no scope:
+  `feat(study): add mock-exam…`, `fix(knowledge-base): …`.
+- **Versões** — cada plugin tem a sua, em `plugins/<plugin>/.claude-plugin/plugin.json`, e sobe num commit
+  `chore(release): bump <plugin> to X.Y.Z` à parte (`commit-push` trata disso).
+- **Validação** — antes de um commit, `claude plugin validate ./plugins/<plugin>` e
+  `claude plugin validate .` para o marketplace.
 
-### `dev-tools` — Desenvolvimento
+---
 
-| Skill | Resumo | Descrição |
-| :--- | :--- | :--- |
-| [implement-change](plugins/dev-tools/skills/implement-change/SKILL.md) | Implementa uma feature, bugfix ou hotfix ponta a ponta, com registo escrito | Aceita o pedido em qualquer formato (texto livre, issue, página de wiki, spec, screenshots), determina o tipo de mudança (feature/bugfix/hotfix), investiga o projeto, propõe um plano no chat e espera aprovação, escreve a spec em `docs/changes/<tipo>/<PREFIXO><NNNN>-<slug>/README.md` antes de tocar em código — separado de `docs/wiki/`/`docs/notes/` para não poluir uma knowledge base que viva no mesmo `docs/` — implementa, corre a verificação própria do projeto e fecha com um `RESULT.md` honesto sobre o que realmente aconteceu, desvios incluídos. Não commita nem abre PR — isso fica para `commit-push` e `create-pr`. Créditos: [@michelgomessilva](https://github.com/michelgomessilva). |
-| [create-readme](plugins/dev-tools/skills/create-readme/SKILL.md) | Escreve ou reescreve o README.md raiz no formato da casa | Investiga o repositório (stack, arquitetura, módulos, portas, testes, CI) e preenche um template fixo — badges, índice, stack técnica, diagrama de arquitetura, layout anotado, getting started, testes, contribuição — só com factos que consegue provar em ficheiros reais. Nunca inventa comandos, versões ou URLs, remove secções sem evidência em vez de as inventar, e nunca escreve nada que pareça um segredo. Mostra o rascunho completo e espera aprovação antes de escrever o ficheiro. |
-| [create-agents-md](plugins/dev-tools/skills/create-agents-md/SKILL.md) | Escreve ou atualiza o `AGENTS.md` do repositório, em conjunto contigo | Cria o ficheiro de instruções que todos os agentes leem (Claude Code, Codex, Cursor, Copilot…) a partir de um primeiro rascunho do `/init` e do que consegue provar no repositório — scripts, CI (o que corre e o que não corre, branch guards, título de PR, versões automáticas), histórico de branches e commits, padrões do código — e vai perguntando, secção a secção, o que o código não diz: armadilhas, o que nunca fazer, língua e o fluxo git (commits na `main` ou não, `develop`, branches `feature`/`fix`/`hotfix`), com uma recomendação. Só fica o que faria um agente errar se faltasse. Garante que o Claude Code o lê (`@AGENTS.md` num `CLAUDE.md`), não mexe no bloco da knowledge base, mostra o ficheiro completo (ou o diff, ao atualizar) e espera aprovação antes de escrever. |
-| [clean-architecture](plugins/dev-tools/skills/clean-architecture/SKILL.md) | Cria (ou reorganiza) um projeto em Clean Architecture | Estrutura um projeto novo em camadas Domain/Application/Infrastructure/Api (+ CrossCutting opcional), ou audita um já existente e propõe um plano de reorganização — adaptando projetos/pastas/ferramentas ao stack real (.NET, Node, Python, Java, Go, ...) em vez de copiar um template. Pergunta primeiro as decisões estruturais (CQRS ou não, um serviço ou vários, base de dados e migrations, Docker, jobs, auth, alcance dos testes) e só cria/move depois de aprovação. Nunca mexe em `docs/` (isso é o `implement-change`/`knowledge-base`) nem commita. |
-| [write-tests](plugins/dev-tools/skills/write-tests/SKILL.md) | Escreve testes unitários e/ou de integração, em qualquer stack | Pergunta primeiro o alvo (um ficheiro/função/feature à tua escolha, ou uma varredura de cobertura ao projeto) e o nível (unit, integração a nível de serviço/API, ou ambos — sem E2E/browser). Deteta a framework de testes e convenções já usadas (ou pergunta qual montar), resolve como subir dependências reais para testes de integração (Testcontainers, docker-compose existente, host de testes em processo), escreve os menos testes possível que provem o comportamento — em vez de um por cada permutação trivial, já que cada teste é um custo recorrente no CI/CD — corre-os para provar que passam, e sinaliza — sem gerar sozinho — outras lacunas de cobertura que note pelo caminho. Nunca mexe em `docs/` nem commita. |
+## Créditos
 
-### `knowledge-base` — Knowledge base pessoal
+- O plugin [`knowledge-base`](plugins/knowledge-base/README.md) segue o fluxo `raw/` → `wiki/` compilado por
+  LLM descrito por [Andrej Karpathy](https://x.com/karpathy/status/2039805659525644595) na nota
+  ["LLM Knowledge Bases"](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
+- [`implement-change`](plugins/dev-tools/README.md) — créditos a
+  [@michelgomessilva](https://github.com/michelgomessilva).
 
-Estas skills implementam o fluxo `raw/` → `wiki/` compilado por LLM descrito por [Andrej Karpathy](https://x.com/karpathy/status/2039805659525644595) na nota ["LLM Knowledge Bases"](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — a inspiração original para esta abordagem.
-
-| Skill | Resumo | Descrição |
-| :--- | :--- | :--- |
-| [knowledge-base](plugins/knowledge-base/skills/knowledge-base/SKILL.md) | Cria a estrutura de pastas de uma knowledge base pessoal | Cria a estrutura de pastas de uma knowledge base pessoal, em dois modos: **research** (estilo Karpathy: `raw/` + `wiki/` + `outputs/` + `tools/`, para quando há muito material externo a ingerir) ou **code** (mais leve, `wiki/` + `notes/`, pensado para repos de código pessoais, alimentado por notas soltas e pelo git log em vez de um `raw/`). Em modo research o `raw/` não tem regras de estrutura, nada assume que a pasta é um repositório git, `notes/` funciona como inbox (as compiladas são arquivadas em `notes/<área>/`) e `outputs/<área>/` divide-se por finalidade — estudo, entregas, respostas e trabalho versionado em pastas `vN/` — com a wiki como única fonte de verdade. Todos os templates são escritos na língua da KB. Pergunta o modo, a pasta de destino, opcionalmente se existe modelo de domínio a documentar (modo code), e se quer ligar a um vault geral partilhado (via junction `wiki/_geral`, visível no mesmo grafo do Obsidian). |
-| [compile-wiki](plugins/knowledge-base/skills/compile-wiki/SKILL.md) | Compila/atualiza a `wiki/` a partir de notas e do git | Faz a compilação, seguindo o modo definido no `KB_GUIDE.md`: em modo research lê `raw/`, resume e organiza em artigos por conceito; em modo code lê `notes/` (ficheiros com frontmatter `status: pending`/`compiled`) e tudo o que houver de novo no git — commits, issues e pull requests (via `gh`, se disponível) — desde o último `last_compiled_at`, e regenera sempre por inteiro `wiki/Estrutura.md` (estrutura de pastas, stack técnica, pontos de entrada e o modelo de domínio, se estiver registado). Em ambos os modos cria backlinks e mantém `wiki/index.md` atualizado — os artigos de decisão de forma incremental, a `Estrutura.md` sempre do zero — e, depois de compilar cada nota, move-a da inbox para `notes/<área>/`. Respeita o tipo de cada nota: as tuas opiniões e decisões, mensagens de outras pessoas atribuídas a quem as escreveu e respostas de IA marcadas como não verificadas. |
-| [capture-note](plugins/knowledge-base/skills/capture-note/SKILL.md) | Grava rapidamente uma nota solta em `notes/` | Grava rapidamente um pensamento na inbox de `notes/` com o frontmatter certo (`status: pending` e, quando é evidente, o tipo: decisão, pergunta, resposta de IA ou mensagem de outra pessoa como o perito ou o professor), sem organizar nada — isso fica para o `compile-wiki`. |
-| [adr-new](plugins/knowledge-base/skills/adr-new/SKILL.md) | Cria uma nota ADR de decisão arquitetural | Cria uma nota estilo ADR (Contexto/Decisão/Consequências) em `notes/`, útil para documentar uma decisão arquitetural no momento em que é tomada. |
-| [resume](plugins/knowledge-base/skills/resume/SKILL.md) | Briefing para retomar um projeto pessoal parado | Briefing só de leitura: lê `wiki/Estrutura.md` (ou `index.md`), notas pendentes, e atividade git recente (incluindo alterações por commitar), e resume "onde ficaste" com sugestão de próximo passo. |
-| [wiki-lint](plugins/knowledge-base/skills/wiki-lint/SKILL.md) | Health check da `wiki/` (links partidos, órfãos, etc.) | Health check da `wiki/`: links partidos, artigos órfãos (não referenciados no `index.md`), referências desatualizadas a ficheiros/decisões que já não existem, entradas soltas em `wiki/sources.md`/`notes/`, notas fora do sítio (compiladas na inbox ou pendentes no arquivo), outputs fora da estrutura ou sem linha no índice, e conteúdo repetido entre `outputs/` e a wiki. Reporta primeiro, só corrige o que for aprovado. |
-
+---
 
 ## Licença
 
-MIT — ver [LICENSE](LICENSE).
+MIT — ver [`LICENSE`](LICENSE).
