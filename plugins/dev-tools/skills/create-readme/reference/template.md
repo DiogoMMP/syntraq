@@ -1,10 +1,8 @@
 # README template
 
-The skeleton below is the house format. Copy it, then replace every `<SLOT>` with a fact you read in the
-target repository and **delete every section, row and bullet you have no evidence for**.
+The skeleton below is the house format. Copy it, then replace every `<SLOT>` with a fact you read in the target repository and **delete every section, row and bullet you have no evidence for**.
 
-**A `<SLOT>` left in the output is a bug.** So is a section kept as a stub. The template is deliberately
-over-complete: most projects will delete a third of it.
+**A `<SLOT>` left in the output is a bug.** So is a section kept as a stub. The template is deliberately over-complete: most projects will delete a third of it.
 
 Guidance lines are marked `>>` — they are notes to you, never copied into the README.
 
@@ -79,9 +77,7 @@ flowchart TD
 
 ## Solution layout
 
->> Untagged fence. Top two-to-three levels only. Every line an existing path. The annotation says what
->> lives there and why it matters — not a restatement of the folder name. Collapse noisy siblings with
->> brace notation. Include the root files that matter.
+>> Untagged fence. Top two-to-three levels only. Every line an existing path. The annotation says what > lives there and why it matters — not a restatement of the folder name. Collapse noisy siblings with > brace notation. Include the root files that matter.
 
 ```
 .
@@ -98,8 +94,7 @@ flowchart TD
 ## <Domain modules | Apps & packages | Routes & features | Public API | Commands>
 
 >> State the organising principle explicitly, then name EVERY slice. Counts only if you counted them.
-Code is organised **by <aggregate | feature | package | route>** in every layer, so a <slice> is a
-vertical slice from <inner> to <outer>: `<Module>`, `<Module>`, `<Module>`, plus `<Shared>` for
+Code is organised **by <aggregate | feature | package | route>** in every layer, so a <slice> is a vertical slice from <inner> to <outer>: `<Module>`, `<Module>`, `<Module>`, plus `<Shared>` for
 <cross-cutting types>.
 
 <Real counts, if counted: "Roughly N entities and N controllers today.">
@@ -128,8 +123,7 @@ vertical slice from <inner> to <outer>: `<Module>`, `<Module>`, `<Module>`, plus
 **<Group — e.g. Cross-cutting>**
 - <Logging shape, documentation requirements, graceful-degradation rules>.
 
->> Each bullet is ONE rule, stated as a rule. This section is prescriptive, not descriptive — it is what
->> keeps the codebase consistent.
+>> Each bullet is ONE rule, stated as a rule. This section is prescriptive, not descriptive — it is what > keeps the codebase consistent.
 
 ---
 
@@ -148,8 +142,7 @@ vertical slice from <inner> to <outer>: `<Module>`, `<Module>`, `<Module>`, plus
 ## Security          <!-- delete if the project has no auth surface -->
 
 - **<Auth mechanism>** with <session shape>; <how roles/claims arrive and are normalised>.
-- **<Authorization model>** — <real policy/role/guard names>. <The default: authenticated unless
-  explicitly anonymous, or the inverse.>
+- **<Authorization model>** — <real policy/role/guard names>. <The default: authenticated unless explicitly anonymous, or the inverse.>
 - **<Key material persistence>** — <where, scoped how, and what that guarantees across restarts>.
 - **<Ingress concerns>** — forwarded headers, CORS origins, HTTPS redirection.
 - **<Development-only bypass>** — <what it does, and why it cannot leak to production>.
@@ -213,8 +206,7 @@ Everything below is done **once**. The examples use <shell> and <assumption>; ad
 <copy-from-example command>
 ```
 
->> Keys only, every value a `<PLACEHOLDER>`. Never copy a value out of the real settings file — see
->> secrets.md. Prefer a variables table to a file dump when the table is clearer.
+>> Keys only, every value a `<PLACEHOLDER>`. Never copy a value out of the real settings file — see > secrets.md. Prefer a variables table to a file dump when the table is clearer.
 
 ```json
 {

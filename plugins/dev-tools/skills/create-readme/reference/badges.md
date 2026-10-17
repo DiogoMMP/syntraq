@@ -1,15 +1,11 @@
 # The badge wall
 
-A block of static [shields.io](https://shields.io) badges directly under the `#` title, one per line, no
-blank lines between them, before the lead paragraph.
+A block of static [shields.io](https://shields.io) badges directly under the `#` title, one per line, no blank lines between them, before the lead paragraph.
 
 **Rules**
 
-- **Static badges only.** `img.shields.io/badge/…` — never a dynamic build/coverage endpoint, which rots
-  or leaks a private URL. A coverage badge is allowed when the repo has a real, enforced gate; hardcode the
-  number the gate enforces.
-- **Every badge must be backed by the tech-stack table**, same version. A badge for something the project
-  does not use is a lie the reader will act on.
+- **Static badges only.** `img.shields.io/badge/…` — never a dynamic build/coverage endpoint, which rots or leaks a private URL. A coverage badge is allowed when the repo has a real, enforced gate; hardcode the number the gate enforces.
+- **Every badge must be backed by the tech-stack table**, same version. A badge for something the project does not use is a lie the reader will act on.
 - **12–16 badges.** Fewer looks unfinished; more is wallpaper.
 - No link wrapping — plain `![alt](url)`, not `[![…](…)](…)`.
 - Never a licence badge unless the repo has a `LICENSE` file.
@@ -38,9 +34,7 @@ blank lines between them, before the lead paragraph.
 ![Label](https://img.shields.io/badge/<label>-<message>-<colour>?logo=<slug>&logoColor=white)
 ```
 
-URL-encode inside the badge path: space → `%20`, `#` → `%23`, `/` → `%2F`, `-` → `--`.
-So `C#-14` → `C%23-14`, `pre-commit` → `pre--commit`, `100% line / branch` →
-`100%25%20line%20%2F%20branch`.
+URL-encode inside the badge path: space → `%20`, `#` → `%23`, `/` → `%2F`, `-` → `--`. So `C#-14` → `C%23-14`, `pre-commit` → `pre--commit`, `100% line / branch` → `100%25%20line%20%2F%20branch`.
 
 ## Catalogue
 
@@ -79,6 +73,4 @@ Copy-paste, then correct the version.
 ![pre-commit](https://img.shields.io/badge/pre--commit-enabled-76b900?logo=pre-commit&logoColor=white)
 ```
 
-For a tech not listed here, use its brand hex and its
-[simple-icons](https://simpleicons.org) slug as `logo=`. If there is no icon, omit `logo=` entirely rather
-than guessing a slug — a broken logo renders as a blank gap.
+For a tech not listed here, use its brand hex and its [simple-icons](https://simpleicons.org) slug as `logo=`. If there is no icon, omit `logo=` entirely rather than guessing a slug — a broken logo renders as a blank gap.
