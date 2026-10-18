@@ -102,7 +102,7 @@ Gera cartões de um só facto (básicos e cloze) a partir da `wiki/` e da formul
 <details>
 <summary><b><code>study-plan</code></b> — Faz o plano de estudo, dia a dia, até aos exames</summary>
 
-Pergunta as datas dos exames e as horas que tens por dia, e distribui o tempo por tema em proporção ao peso no exame × fraqueza (do registo de progresso) × tamanho, em fases — matéria, prática e reta final com simulados em condições de exame e correção — com flashcards diários, revisão espaçada e 10–15% de folga. Cada dia tem tarefas concretas com links e a skill a usar (resumo, perguntas do catálogo, quiz, simulado). Mostra o esboço antes de escrever, guarda o plano com checkboxes e em Word/PDF, e, depois de perguntar, gera um `.ics` e/ou cria os eventos no teu calendário se tiveres um conector ativo (Google Calendar). Responde a "o que tenho hoje?" e replaneia a partir do que já fizeste.
+Pergunta as datas dos exames, as horas que tens por dia e como estudas (mais leitura ou exercícios, primeiro leitura e depois exercícios, blocos longos ou curtos…), e distribui o tempo por tema em proporção ao peso no exame × fraqueza (do registo de progresso) × tamanho, em fases — matéria, prática e reta final com simulados em condições de exame e correção — com flashcards diários, revisão espaçada e 10–15% de folga. Cada dia tem tarefas concretas com links e a skill a usar (resumo, perguntas do catálogo, quiz, simulado). Mostra o esboço antes de escrever, guarda o plano em markdown com checkboxes (sem Word/PDF) e, depois de perguntar, gera um `.ics` e/ou cria os eventos no teu calendário se tiveres um conector ativo (Google Calendar). Responde a "o que tenho hoje?" e replaneia a partir do que já fizeste.
 
 → [`SKILL.md`](skills/study-plan/SKILL.md)
 
