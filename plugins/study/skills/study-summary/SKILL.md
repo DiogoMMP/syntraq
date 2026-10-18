@@ -62,7 +62,7 @@ A summary to print and study from: everything the course asks for, weighted by w
    `<summary>` is "summary" in the KB's language (e.g. `resumo`), `<scope>` a short slug: the course's own name for the whole course (`resumo-engcia`), or the block or topic (`resumo-restricoes`).
    - **Versions:** the file name never changes and always holds the latest version. A new summary starts at version 1; regenerating an existing one with content changes bumps `version` and sets `updated` to today; re-rendering without content changes keeps both. Older versions aren't kept — they can be regenerated from the wiki.
 
-8. **Render**: `python <plugin>/scripts/render.py <source.md>` (the plugin's `scripts/` folder, two levels above this skill). It writes the `.docx` and `.pdf` next to the source, with the cover, a table of contents, the boxes, Word equations, highlighted code, and "title — vN — date" plus the page number in the footer.
+8. **Render**: `python <plugin>/scripts/render.py <source.md>` (the plugin's `scripts/` folder, two levels above this skill). It writes the `.docx` and `.pdf` next to the source, with the cover, a table of contents, the boxes, Word equations, highlighted code, and "title — vN — date" plus the page number in the footer. Layout is automatic: every top-level `#` section starts on a new page, and paragraphs, code blocks, boxes and tables are never cut across pages (a table that fits on a page stays whole; a longer one breaks only between rows and repeats its header) — so use `#` only for the major sections and `##` for what lives inside them.
    - Exit code 3 means pandoc is missing — go back to step 2. Exit code 4 means pandoc rejected the source — fix the markdown and run it again.
    - If the last line says the PDF was skipped (no Word or LibreOffice), report that the `.docx` is ready and the PDF isn't.
 
@@ -74,6 +74,6 @@ A summary to print and study from: everything the course asks for, weighted by w
 
 ## Notes
 
-- Write for printing: no "click here", no colour-only meaning, tables that fit A4 portrait. Use the band and state emoji (🔥 ⚠️ 📎, 🔴 🟡 🟢 ⚪) freely in the `.md`: the renderer swaps them for plain symbols in the Word/PDF (●●● ●●○ ●○○, ▼ ◆ ▲ ○), which keeps the PDF small — so the quick map's legend line must name each band in words too.
+- Write for printing: no "click here", no colour-only meaning, tables that fit A4 portrait and stay short enough to sit on one page (split a long table by topic instead of one giant one). Use the band and state emoji (🔥 ⚠️ 📎, 🔴 🟡 🟢 ⚪) freely in the `.md`: the renderer swaps them for plain symbols in the Word/PDF (●●● ●●○ ●○○, ▼ ◆ ▲ ○), which keeps the PDF small — so the quick map's legend line must name each band in words too.
 - A summary covers what the course teaches; the exam map only decides how much space each topic gets. A topic that never comes up still gets its short section if it's in scope.
 - Don't summarise exam questions beyond one line each — the catalog links to the papers.

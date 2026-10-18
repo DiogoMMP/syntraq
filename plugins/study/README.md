@@ -19,7 +19,7 @@ Skills de estudo que trabalham por cima de uma knowledge base em modo research (
 /plugin install study@syntraq
 ```
 
-O material para imprimir (resumos, simulados, resoluções, planos) é gerado em Word e PDF com o [pandoc](https://pandoc.org) e o Microsoft Word (ou o LibreOffice) — as skills perguntam antes de instalar o pandoc. Os flashcards exportam para o ficheiro de texto do Anki sem instalar nada, ou para `.apkg` com o `genanki`.
+O material para imprimir (resumos, simulados, resoluções) é gerado em Word e PDF com o [pandoc](https://pandoc.org) e o Microsoft Word (ou o LibreOffice) — as skills perguntam antes de instalar o pandoc. Os flashcards exportam para o ficheiro de texto do Anki sem instalar nada, ou para `.apkg` com o `genanki`.
 
 ## Skills
 
