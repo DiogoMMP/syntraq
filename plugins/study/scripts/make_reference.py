@@ -8,6 +8,7 @@ Custom paragraph styles, used from markdown as fenced divs:
     ::: {custom-style="Exam box"}      how a topic comes up in the exam (real questions)
     ::: {custom-style="Warning box"}   common mistakes
     ::: {custom-style="Example box"}   worked examples
+    ::: {custom-style="Note box"}      notes about the document itself (gaps in the sources, where a question came from)
 
 Usage (normally called by render.py): python make_reference.py [<output.docx>]
 """
@@ -26,7 +27,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
-STYLE_VERSION = 3
+STYLE_VERSION = 4
 
 BODY_FONT = "Calibri"
 CODE_FONT = "Consolas"
@@ -36,6 +37,7 @@ BOXES = {
     "Exam box": ("DCE8F5", "2E5C8A"),
     "Warning box": ("FBEBD6", "C77C1E"),
     "Example box": ("EEEEEE", "7A7A7A"),
+    "Note box": ("EFE9F7", "6B4FA0"),
 }
 
 
@@ -78,6 +80,7 @@ def style_or_none(doc, name):
 
 
 def build(pandoc, out):
+    """Write the reference.docx to `out`, restyling pandoc's default one."""
     with tempfile.TemporaryDirectory() as tmp:
         base = Path(tmp) / "default.docx"
         with open(base, "wb") as handle:

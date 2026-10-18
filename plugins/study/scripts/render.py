@@ -12,7 +12,7 @@ frontmatter may set:
 
 Layout: every top-level section starts on a new page; paragraphs, code blocks and the boxes are never
 cut across pages; a table that fits on a page is kept whole (a longer one breaks only between rows and
-repeats its header row).
+repeats its header row). "Fits" means at most 12 rows and about 1200 characters.
 
 Wiki links ([[Article]] / [[Article|text]]) are turned into plain text, since they mean
 nothing outside Obsidian. The band and state emoji (🔥 ⚠️ 📎 🔴 🟡 🟢 ⚪) are swapped for plain symbols
@@ -184,15 +184,20 @@ def add_footer(docx_path, meta, fallback_title):
     doc.save(str(docx_path))
 
 
-BOX_STYLES = ("Exam box", "Warning box", "Example box")
-MAX_KEPT_TABLE_ROWS = 25
+BOX_STYLES = ("Exam box", "Warning box", "Example box", "Note box")
+# A table is kept whole on one page only when it is clearly small: few rows and little text. Word cannot
+# honour keep-with-next across a table taller than a page and would just push it down, wasting space.
+MAX_KEPT_TABLE_ROWS = 12
+MAX_KEPT_TABLE_CHARS = 1200
 
 
 def set_keep_with_next(paragraph):
+    """Keep this paragraph on the same page as the next one."""
     paragraph.paragraph_format.keep_with_next = True
 
 
 def add_row_flag(row, tag):
+    """Add an empty row property (w:cantSplit, w:tblHeader…) to a table row, once."""
     tr_pr = row._tr.get_or_add_trPr()
     if tr_pr.find(qn(tag)) is None:
         tr_pr.append(OxmlElement(tag))
@@ -208,7 +213,8 @@ def tidy_layout(docx_path, section_breaks):
             add_row_flag(row, "w:cantSplit")
         if rows:
             add_row_flag(rows[0], "w:tblHeader")
-        if len(rows) <= MAX_KEPT_TABLE_ROWS:
+        chars = sum(len(cell.text) for row in rows for cell in row.cells)
+        if len(rows) <= MAX_KEPT_TABLE_ROWS and chars <= MAX_KEPT_TABLE_CHARS:
             for row in rows[:-1]:
                 for cell in row.cells:
                     for paragraph in cell.paragraphs:
