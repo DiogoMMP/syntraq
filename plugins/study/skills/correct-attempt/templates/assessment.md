@@ -48,9 +48,8 @@ questions:
 
 **What's missing or wrong**
 
-::: {custom-style="Warning box"}
-- … — *incomplete*: …
-:::
+> [!warning]
+> - … — *incomplete*: …
 
 **How to get it right**
 
