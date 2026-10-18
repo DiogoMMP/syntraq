@@ -31,6 +31,10 @@ status: final
 
 ## Concepts and definitions
 
+::: {custom-style="Note box"}
+Note: {{only if something about the content needs flagging, e.g. "Not in the KB or raw/ — left out"; delete the box otherwise}}
+:::
+
 ## Formulas and rules
 
 $$ P(H \mid E) = \frac{P(E \mid H)\,P(H)}{P(E)} $$

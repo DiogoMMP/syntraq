@@ -14,6 +14,11 @@ exam_label: Exam
 exams:
   - ENGCIA: 2027-01-12 09:30 1h
   - PPROGIA: 2027-01-15 14:00 2h
+study_style:
+  mix: more reading than exercises
+  order: reading first, then exercises
+  sessions: 45 min blocks with short breaks
+  review: flashcards and quizzes
 availability:
   weekdays: 2h
   saturday: 5h

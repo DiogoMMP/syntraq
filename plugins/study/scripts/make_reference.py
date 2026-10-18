@@ -8,6 +8,7 @@ Custom paragraph styles, used from markdown as fenced divs:
     ::: {custom-style="Exam box"}      how a topic comes up in the exam (real questions)
     ::: {custom-style="Warning box"}   common mistakes
     ::: {custom-style="Example box"}   worked examples
+    ::: {custom-style="Note box"}      notes about the document itself (gaps in the sources, where a question came from)
 
 Usage (normally called by render.py): python make_reference.py [<output.docx>]
 """
@@ -26,7 +27,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
-STYLE_VERSION = 2
+STYLE_VERSION = 4
 
 BODY_FONT = "Calibri"
 CODE_FONT = "Consolas"
@@ -36,6 +37,7 @@ BOXES = {
     "Exam box": ("DCE8F5", "2E5C8A"),
     "Warning box": ("FBEBD6", "C77C1E"),
     "Example box": ("EEEEEE", "7A7A7A"),
+    "Note box": ("EFE9F7", "6B4FA0"),
 }
 
 
@@ -78,6 +80,7 @@ def style_or_none(doc, name):
 
 
 def build(pandoc, out):
+    """Write the reference.docx to `out`, restyling pandoc's default one."""
     with tempfile.TemporaryDirectory() as tmp:
         base = Path(tmp) / "default.docx"
         with open(base, "wb") as handle:
@@ -95,6 +98,9 @@ def build(pandoc, out):
             style.font.name = BODY_FONT
             style.font.size = Pt(11)
             style.paragraph_format.space_after = Pt(6)
+            # A paragraph is never cut across two pages, and no lone first/last line is left behind.
+            style.paragraph_format.keep_together = True
+            style.paragraph_format.widow_control = True
 
     for level, size in ((1, 18), (2, 14), (3, 12), (4, 11)):
         style = style_or_none(doc, f"Heading {level}")
@@ -107,8 +113,8 @@ def build(pandoc, out):
             style.paragraph_format.keep_with_next = True
     heading_1 = style_or_none(doc, "Heading 1")
     if heading_1 is not None:
-        # No page break before each section: short sections would leave half-empty printed pages.
-        heading_1.paragraph_format.page_break_before = False
+        # Every major section starts on a new page (render.py can switch this off per document).
+        heading_1.paragraph_format.page_break_before = True
         heading_1.paragraph_format.space_before = Pt(22)
 
     for name in ("Title", "Subtitle"):
@@ -122,6 +128,8 @@ def build(pandoc, out):
         if style is not None:
             style.font.name = CODE_FONT
             style.font.size = Pt(9.5)
+            if style.type == WD_STYLE_TYPE.PARAGRAPH:
+                style.paragraph_format.keep_together = True
 
     body = style_or_none(doc, "Body Text") or doc.styles["Normal"]
     for name, (fill, border) in BOXES.items():
@@ -131,6 +139,7 @@ def build(pandoc, out):
         style.font.size = Pt(10.5)
         style.paragraph_format.left_indent = Cm(0.4)
         style.paragraph_format.space_after = Pt(4)
+        style.paragraph_format.keep_together = True
         shade_and_border(style, fill, border)
 
     doc.save(str(out))

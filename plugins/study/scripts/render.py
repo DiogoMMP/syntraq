@@ -8,6 +8,11 @@ frontmatter may set:
     title, subtitle, date, lang, toc-title   used by pandoc for the cover and the table of contents
     toc: false                               leave the table of contents out (e.g. an exam paper)
     version, updated                         shown in the footer of every page, when present
+    section-breaks: false                    don't start every top-level (#) section on a new page
+
+Layout: every top-level section starts on a new page; paragraphs, code blocks and the boxes are never
+cut across pages; a table that fits on a page is kept whole (a longer one breaks only between rows and
+repeats its header row). "Fits" means at most 12 rows and about 1200 characters.
 
 Wiki links ([[Article]] / [[Article|text]]) are turned into plain text, since they mean
 nothing outside Obsidian. The band and state emoji (🔥 ⚠️ 📎 🔴 🟡 🟢 ⚪) are swapped for plain symbols
@@ -179,6 +184,57 @@ def add_footer(docx_path, meta, fallback_title):
     doc.save(str(docx_path))
 
 
+BOX_STYLES = ("Exam box", "Warning box", "Example box", "Note box")
+# A table is kept whole on one page only when it is clearly small: few rows and little text. Word cannot
+# honour keep-with-next across a table taller than a page and would just push it down, wasting space.
+MAX_KEPT_TABLE_ROWS = 12
+MAX_KEPT_TABLE_CHARS = 1200
+
+
+def set_keep_with_next(paragraph):
+    """Keep this paragraph on the same page as the next one."""
+    paragraph.paragraph_format.keep_with_next = True
+
+
+def add_row_flag(row, tag):
+    """Add an empty row property (w:cantSplit, w:tblHeader…) to a table row, once."""
+    tr_pr = row._tr.get_or_add_trPr()
+    if tr_pr.find(qn(tag)) is None:
+        tr_pr.append(OxmlElement(tag))
+
+
+def tidy_layout(docx_path, section_breaks):
+    """Keep tables and boxes from being cut, and start each top-level section on a new page."""
+    doc = Document(str(docx_path))
+
+    for table in doc.tables:
+        rows = table.rows
+        for row in rows:
+            add_row_flag(row, "w:cantSplit")
+        if rows:
+            add_row_flag(rows[0], "w:tblHeader")
+        chars = sum(len(cell.text) for row in rows for cell in row.cells)
+        if len(rows) <= MAX_KEPT_TABLE_ROWS and chars <= MAX_KEPT_TABLE_CHARS:
+            for row in rows[:-1]:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        set_keep_with_next(paragraph)
+
+    # A box made of several paragraphs stays in one piece.
+    paragraphs = doc.paragraphs
+    for current, following in zip(paragraphs, paragraphs[1:]):
+        name = current.style.name if current.style is not None else ""
+        if name in BOX_STYLES and following.style is not None and following.style.name == name:
+            set_keep_with_next(current)
+
+    if not section_breaks:
+        for paragraph in paragraphs:
+            if paragraph.style is not None and paragraph.style.name == "Heading 1":
+                paragraph.paragraph_format.page_break_before = False
+
+    doc.save(str(docx_path))
+
+
 WORD_SCRIPT = r"""
 $ErrorActionPreference = 'Stop'
 $word = New-Object -ComObject Word.Application
@@ -258,6 +314,7 @@ def main():
     toc = meta.get("toc", "true").lower() not in ("false", "no", "0")
     run_pandoc(pandoc, source, docx_path, reference, toc)
     add_footer(docx_path, meta, source.stem)
+    tidy_layout(docx_path, meta.get("section-breaks", "true").lower() not in ("false", "no", "0"))
     print(f"DOCX: {docx_path}")
 
     if args.no_pdf:

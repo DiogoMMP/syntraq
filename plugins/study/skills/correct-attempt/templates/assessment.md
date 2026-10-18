@@ -12,7 +12,7 @@ paper: path/to/the/paper (raw/… or outputs/…)
 reference: mock-solutions | official | solve-exam | generated
 original:
   - {{NN}}-{{SLUG}}-original-1.jpg
-  - {{NN}}-{{SLUG}}-original-2.jpg
+  - raw/path/already/in/the/kb.pdf
 scale: 20
 estimated_grade: 13.4
 questions:
@@ -48,9 +48,8 @@ questions:
 
 **What's missing or wrong**
 
-::: {custom-style="Warning box"}
-- … — *incomplete*: …
-:::
+> [!warning]
+> - … — *incomplete*: …
 
 **How to get it right**
 

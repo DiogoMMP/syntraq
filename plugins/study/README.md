@@ -19,7 +19,7 @@ Skills de estudo que trabalham por cima de uma knowledge base em modo research (
 /plugin install study@syntraq
 ```
 
-O material para imprimir (resumos, simulados, resoluções, planos) é gerado em Word e PDF com o [pandoc](https://pandoc.org) e o Microsoft Word (ou o LibreOffice) — as skills perguntam antes de instalar o pandoc. Os flashcards exportam para o ficheiro de texto do Anki sem instalar nada, ou para `.apkg` com o `genanki`.
+O material para imprimir (resumos, simulados, resoluções) é gerado em Word e PDF com o [pandoc](https://pandoc.org) e o Microsoft Word (ou o LibreOffice) — as skills perguntam antes de instalar o pandoc. Os flashcards exportam para o ficheiro de texto do Anki sem instalar nada, ou para `.apkg` com o `genanki`.
 
 ## Skills
 
@@ -75,7 +75,7 @@ Resolve um exame antigo, uma ficha, perguntas do catálogo ou um enunciado colad
 <details>
 <summary><b><code>correct-attempt</code></b> — Corrige as tuas tentativas e regista os pontos fracos</summary>
 
-Lê a tua resolução (foto, scan, PDF ou texto), confirma contigo a escrita à mão duvidosa antes de corrigir e corrige pergunta a pergunta e critério a critério, com a exigência do professor, contra a melhor referência disponível (soluções do simulado, resolução oficial, `solve-exam` ou uma feita na hora). Classifica cada erro (conceito, cálculo, incompleto, interpretação, notação, por responder), dá uma nota estimada na escala da cadeira e guarda a avaliação em `estudo/progresso-<cadeira>/tentativas/`. Reconstrói (junto com as sessões do `quiz`) o registo de progresso por tema (🔴/🟡/🟢, tendência, erros recorrentes) e a prioridade de estudo cruzada com o peso nos exames — que o `mock-exam` usa para simulados focados nos pontos fracos e o `study-summary` para mostrar o teu estado em cada tema.
+Lê a tua resolução (foto, scan, PDF ou texto), confirma contigo a escrita à mão duvidosa antes de corrigir e corrige pergunta a pergunta e critério a critério, com a exigência do professor, contra a melhor referência disponível (soluções do simulado, resolução oficial, `solve-exam` ou uma feita na hora). Classifica cada erro (conceito, cálculo, incompleto, interpretação, notação, por responder), dá uma nota estimada na escala da cadeira e guarda a avaliação (só o `.md`, sem Word/PDF) em `estudo/progresso-<cadeira>/tentativas/`, juntando o ficheiro que enviaste apenas se ainda não estiver no KB. Reconstrói (junto com as sessões do `quiz`) o registo de progresso por tema (🔴/🟡/🟢, tendência, erros recorrentes) e a prioridade de estudo cruzada com o peso nos exames — que o `mock-exam` usa para simulados focados nos pontos fracos e o `study-summary` para mostrar o teu estado em cada tema.
 
 → [`SKILL.md`](skills/correct-attempt/SKILL.md)
 
@@ -102,7 +102,7 @@ Gera cartões de um só facto (básicos e cloze) a partir da `wiki/` e da formul
 <details>
 <summary><b><code>study-plan</code></b> — Faz o plano de estudo, dia a dia, até aos exames</summary>
 
-Pergunta as datas dos exames e as horas que tens por dia, e distribui o tempo por tema em proporção ao peso no exame × fraqueza (do registo de progresso) × tamanho, em fases — matéria, prática e reta final com simulados em condições de exame e correção — com flashcards diários, revisão espaçada e 10–15% de folga. Cada dia tem tarefas concretas com links e a skill a usar (resumo, perguntas do catálogo, quiz, simulado). Mostra o esboço antes de escrever, guarda o plano com checkboxes e em Word/PDF, e, depois de perguntar, gera um `.ics` e/ou cria os eventos no teu calendário se tiveres um conector ativo (Google Calendar). Responde a "o que tenho hoje?" e replaneia a partir do que já fizeste.
+Pergunta as datas dos exames, as horas que tens por dia e como estudas (mais leitura ou exercícios, primeiro leitura e depois exercícios, blocos longos ou curtos…), e distribui o tempo por tema em proporção ao peso no exame × fraqueza (do registo de progresso) × tamanho, em fases — matéria, prática e reta final com simulados em condições de exame e correção — com flashcards diários, revisão espaçada e 10–15% de folga. Cada dia tem tarefas concretas com links e a skill a usar (resumo, perguntas do catálogo, quiz, simulado). Mostra o esboço antes de escrever, guarda o plano em markdown com checkboxes (sem Word/PDF) e, depois de perguntar, gera um `.ics` e/ou cria os eventos no teu calendário se tiveres um conector ativo (Google Calendar). Responde a "o que tenho hoje?" e replaneia a partir do que já fizeste.
 
 → [`SKILL.md`](skills/study-plan/SKILL.md)
 
