@@ -48,7 +48,7 @@ Descobre os exames antigos em `raw/` pelo caminho, nome e conteúdo (exames, exa
 <details>
 <summary><b><code>study-summary</code></b> — Escreve um resumo completo para imprimir, em Word e PDF</summary>
 
-Faz o resumo de uma cadeira, de um bloco ou de alguns temas a partir da `wiki/`, do detalhe em `raw/` (slides, livros, fichas, resoluções) e do mapa de exames, com espaço proporcional ao peso de cada tema nos exames: definições, fórmulas (equações nativas do Word), métodos passo a passo, exemplos resolvidos, erros comuns e as perguntas reais de exame de cada tema. Mostra o índice para aprovação antes de escrever, guarda uma pasta por âmbito sem data no nome (`estudo/resumo-<âmbito>/`) com a versão e a data na capa e no rodapé, e renderiza com pandoc e Word — se o pandoc não estiver instalado, pergunta se o deve instalar.
+Faz o resumo de uma cadeira, de um bloco ou de alguns temas a partir da `wiki/`, do detalhe em `raw/` (slides, livros, fichas, resoluções) e do mapa de exames, com espaço proporcional ao peso de cada tema nos exames: definições, fórmulas (equações nativas do Word), métodos passo a passo, exemplos resolvidos e erros comuns, sem poluição de exames. As perguntas reais de exame de cada tema (com o peso, a faixa e onde ler no resumo) vão para um documento à parte em markdown, o mapa de exames. Mostra o índice para aprovação antes de escrever, guarda uma pasta por âmbito sem data no nome (`estudo/resumo-<âmbito>/`) só com o Word, o PDF e o mapa de exames (sem `.md` do resumo), com a versão e a data na capa e no rodapé, e renderiza com pandoc e Word — se o pandoc não estiver instalado, pergunta se o deve instalar.
 
 → [`SKILL.md`](skills/study-summary/SKILL.md)
 
