@@ -24,7 +24,7 @@ figure. Images (`![caption](figuras/x.png){width=80%}`) are embedded as they are
 
 Exit codes: 0 ok (the PDF may still be skipped — see the last line printed), 2 bad input,
 3 pandoc not installed, 4 pandoc failed, 5 the source has mermaid diagrams and mmdc is not installed,
-6 mmdc could not render a diagram.
+6 mmdc could not render a diagram (or took more than two minutes on one).
 """
 
 import argparse
@@ -55,6 +55,7 @@ EMOJI = {"🔥": "●●●", "⚠️": "●●○", "⚠": "●●○", "📎":
 
 
 def swap_emoji(text):
+    """Swap the band and state emoji for plain symbols, in the Word/PDF only."""
     for emoji, symbol in EMOJI.items():
         text = text.replace(emoji, symbol)
     return text
@@ -118,6 +119,7 @@ def read_frontmatter(text):
 
 
 def strip_wikilinks(text):
+    """Turn [[Article]] and [[Article|text]] into plain text."""
     return WIKILINK.sub(lambda m: m.group(2) or m.group(1).split("/")[-1], text)
 
 
@@ -129,6 +131,7 @@ def highlight_flag(pandoc):
     return "--syntax-highlighting=tango" if version >= (3, 8) else "--highlight-style=tango"
 
 
+MERMAID_TIMEOUT = 120  # seconds per diagram; a hung mmdc must not block the summary
 MERMAID = re.compile(r"^```mermaid[ \t]*(.*?)[ \t]*\r?\n(.*?)^```[ \t]*$", re.S | re.M)
 
 
@@ -164,15 +167,21 @@ def render_mermaid(text, tmp):
     )
 
     def one(match):
+        """Render one Mermaid block to a PNG and return the markdown image that replaces it."""
         counter[0] += 1
         mmd = Path(tmp) / f"diagram-{counter[0]}.mmd"
         png = Path(tmp) / f"diagram-{counter[0]}.png"
         mmd.write_text(match.group(2), encoding="utf-8")
-        result = subprocess.run(
-            [mmdc, "-i", str(mmd), "-o", str(png), "-c", str(config), "-s", "2", "-b", "white"],
-            capture_output=True,
-            text=True,
-        )
+        try:
+            result = subprocess.run(
+                [mmdc, "-i", str(mmd), "-o", str(png), "-c", str(config), "-s", "2", "-b", "white"],
+                capture_output=True,
+                text=True,
+                timeout=MERMAID_TIMEOUT,
+            )
+        except subprocess.TimeoutExpired:
+            sys.stderr.write(f"mmdc did not finish diagram {counter[0]} within {MERMAID_TIMEOUT} seconds\n")
+            sys.exit(6)
         if result.returncode != 0 or not png.is_file():
             sys.stderr.write(f"mmdc failed on diagram {counter[0]}:\n{result.stderr or result.stdout}\n")
             sys.exit(6)
@@ -183,6 +192,7 @@ def render_mermaid(text, tmp):
 
 
 def run_pandoc(pandoc, source, docx_path, reference, toc):
+    """Render the markdown source (Mermaid diagrams first) to a .docx with pandoc; exit 4 if pandoc fails."""
     text = swap_emoji(strip_wikilinks(source.read_text(encoding="utf-8")))
     with tempfile.TemporaryDirectory() as tmp:
         text = render_mermaid(text, tmp)
@@ -213,6 +223,7 @@ def run_pandoc(pandoc, source, docx_path, reference, toc):
 
 
 def add_field(paragraph, instruction):
+    """Append a Word field (page number, total pages…) to a paragraph."""
     run = paragraph.add_run()
     for kind, text in (("begin", None), (None, instruction), ("separate", None), ("end", None)):
         if kind:
@@ -404,6 +415,7 @@ def make_pdf(docx_path, pdf_path):
 
 
 def main():
+    """Parse the arguments, render the .docx, tidy its layout and make the PDF."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("source", type=Path)
     parser.add_argument("--no-pdf", action="store_true")

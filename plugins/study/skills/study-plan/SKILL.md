@@ -84,7 +84,7 @@ Read the latest plan for the course(s), find today's heading, and answer in the 
 
 For "atualiza o plano", "não fiz X", "fiz mais do que estava previsto", "estou atrasado", "replaneia", or a change of exam date or availability. The user tells what happened in plain words; the plan adjusts.
 
-1. **Find the current state.** Read the latest plan for the course(s). If it has a `notion_page`, fetch that page too and merge its ticked checkboxes into what you know (a task ticked in either place is done). Re-read the progress record: states may have changed since.
+1. **Find the current state.** Read the latest plan for the course(s). If it has a `notion_page` and a Notion connector is available in this session, fetch that page too and merge its ticked checkboxes into what you know (a task ticked in either place is done); without a connector, carry on from the markdown plan and say in the report that the Notion state was not refreshed (and, at the delivery step, that the Notion page can't be updated now). Re-read the progress record: states may have changed since.
 2. **Ask what changed, only for what isn't already clear.** Let the user say it freely and read it from there: tasks not done, tasks done that weren't planned (a mock exam taken early, a whole extra topic), days lost, a change in availability or exam dates. Match what they say to the plan's tasks and show the match back in one short list before changing anything ("marco como feito: …; passo para a frente: …") so a misreading is caught.
 3. **Adjust, from today to the exams:**
    - tasks done are marked `- [x]` where they were planned, and extra work done is added to the day it happened, with its duration;
