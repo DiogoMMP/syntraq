@@ -1,6 +1,6 @@
 ---
 name: study-plan
-description: Build a day-by-day study plan up to one or more exams, inside a research knowledge base created by the knowledge-base skill — time per topic in proportion to exam weight × weakness × size, phases (material, practice, mock exams under exam conditions), daily flashcards, spaced review and buffer days, each day with concrete tasks that link the KB's study material and say which study skill to run. Asks how the user studies (reading vs exercises, order, session length…) and shapes the plan around it. Saves a markdown plan with checkboxes (markdown only — no Word/PDF) and, after asking, an .ics file and/or events in the user's calendar when a calendar connector is active. Also answers "what do I have today?" and replans from what's done. Use when the user wants a study plan, a revision schedule or a calendar up to an exam, or says they're behind — e.g. "faz-me um plano de estudo até ao exame", "plano para a época de exames", "o que tenho hoje?", "estou atrasado, replaneia", "study plan", "revision timetable".
+description: Build a day-by-day study plan up to one or more exams, inside a research knowledge base created by the knowledge-base skill — time per topic in proportion to exam weight × weakness × size, phases (material, practice, mock exams under exam conditions), daily flashcards, spaced review and buffer days, each day with concrete tasks that link the KB's study material and say which study skill to run. Asks how the user studies (reading vs exercises, order, session length…) and shapes the plan around it. Saves a markdown plan with checkboxes (markdown only — no Word/PDF) and, after asking, delivers it to one of: the user's calendar (through a calendar connector), an .ics file, or nowhere; and can also put the plan in a Notion page, remembering which one. Also answers "what do I have today?" and updates the plan when the user says what they did and didn't do ("não fiz X", "fiz mais Y", "estou atrasado"). Use when the user wants a study plan, a revision schedule or a calendar up to an exam, or says they're behind — e.g. "faz-me um plano de estudo até ao exame", "plano para a época de exames", "o que tenho hoje?", "estou atrasado, replaneia", "study plan", "revision timetable".
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(find *), Bash(python *), Bash(py *), AskUserQuestion
 ---
 
@@ -12,8 +12,9 @@ A calendar to the exam that spends the time where it pays: on the topics that we
 
 - **Markdown without hard wraps.** Every `.md` this skill writes has one paragraph, list item or table row per line, however long — never broken at 80/100 columns; the viewer wraps lines. Line breaks only between blocks and inside code blocks (and, in flashcard decks, inside a card, where a line break is part of the card).
 - **Plan with the user's real time.** Never assume hours or dates: ask for what can't be read from the KB.
+- **Every task is a checkbox, everywhere.** In the markdown (`- [ ]`), in the Notion page (to-do items), whatever the template or database says — a template can decide the layout, never that tasks stop being checkable. If the Notion page has no checkbox property or block for them, add to-do items inside the page body anyway. The update mode relies on those checkboxes.
 - **Tasks are concrete**: a section of a summary with its pages, catalog questions by id, a quiz on a topic, a mock exam — with the study skill to run for each. Never "study Bayes".
-- **Nothing reaches the user's calendar without a yes.** Creating events is outward-facing: show what would be created and wait for confirmation; ask before writing the `.ics` too.
+- **Nothing leaves the KB without a yes.** Creating calendar events, writing an `.ics` or writing to Notion is outward-facing or extra output: show what would be created and wait for confirmation, and never do any of them just because the plan was asked for.
 - **`raw/` has no rules and is never written to.** Don't assume the KB is a git repository.
 - **The KB's language**; the template is in English — translate headings, labels, frontmatter values (keys stay in English) and `exam_label`.
 
@@ -58,21 +59,40 @@ A calendar to the exam that spends the time where it pays: on the topics that we
 
 10. **Save it where the KB says** — the study purpose folder in `KB_GUIDE.md`/`outputs/README.md`: `outputs/<area>/<study>/<plan>-<scope>/` for one course, or the general area's study folder (e.g. `outputs/geral/estudo/`) when the plan covers several, with names in the KB's language (`plano-<scope>`; scope = the course, or the season, e.g. `plano-epoca-normal-2026-27`). Versioned like summaries: the name never changes, `version`/`updated` in the frontmatter, no changelog. The plan is the `.md` only — don't render a Word or PDF. Add or update one short row in the index table of `outputs/README.md`.
 
-11. **Calendar — ask first.** Check whether a calendar connector is available in this session (tools that create calendar events, e.g. Google Calendar's). Then ask with `AskUserQuestion`:
-    - with a connector: create the events **in the calendar**, write an **`.ics`** to import, **both**, or **neither**;
-    - without one: write an **`.ics`** to import, or not. Also ask whether study blocks should be all-day events or start at a set time (e.g. 18:00).
+11. **Delivery — ask first, always the same three options.** Ask with `AskUserQuestion` where the plan should go:
+    - **Calendar** — the events are created directly in the user's calendar through a calendar connector (Google Calendar, Outlook…). Offered only when a connector that creates events is available in this session; otherwise say it isn't and offer the other two.
+    - **`.ics`** — write a file to import into any calendar.
+    - **Neither** — nothing is created; the markdown plan is all there is.
+    Pick nothing by default and write no `.ics` unless the user chose it. For the first two, also ask whether study blocks are all-day events or start at a set time (e.g. 18:00).
     - **`.ics`**: `python <plugin>/scripts/make_ics.py <plan.md> [--start HH:MM]` writes `<plan>.ics` next to the plan (one event per study day with its tasks in the description, one per exam).
-    - **Calendar connector**: `python <plugin>/scripts/make_ics.py <plan.md> --json [--start HH:MM]` prints the same events. Show how many would be created and three examples, and only after a yes create them one by one with the connector, in the calendar the user chooses. Report what was created; if some failed, say which. Never delete or change existing events. When replanning after events were created, ask before creating the new ones, and remind the user that the old ones are still there.
+    - **Calendar connector**: `python <plugin>/scripts/make_ics.py <plan.md> --json [--start HH:MM]` prints the same events. Show how many would be created and three examples, and only after a yes create them one by one with the connector, in the calendar the user chooses. Report what was created; if some failed, say which. Never delete or change existing events. When updating the plan after events were created, ask before creating the new ones, and remind the user that the old ones are still there.
 
-12. **Report**: the files written, hours per course, the mock exam dates, what didn't fit, and the calendar outcome.
+12. **Notion — offer it as an extra.** Independent of step 11: if a Notion connector is available in this session, ask with `AskUserQuestion` whether to also put the plan in Notion (yes / no); never assume it.
+    - **Which page.** Look for `notion_plans_parent` under a `## Study settings` section in the KB's `KB_GUIDE.md`. If it is there, confirm it ("Ponho em <title>?") instead of asking from scratch. If it isn't, ask the user where the plan should go: a link to a Notion page, or a name to search for in Notion (search, show the best matches, let the user choose). Once the page is known, ask whether to **remember it**, and on a yes add `notion_plans_parent: <page url>` under `## Study settings` in `KB_GUIDE.md` (creating the section at the end if needed), so next plans don't ask again. `KB_GUIDE.md` is the only KB file touched, and only with that line.
+    - **The Notion page decides the format.** Before creating anything, fetch the parent page and read what it says: instructions written in it, a template, the structure and properties of a database, example child pages, naming conventions, an order of sections. Follow them over this skill's default layout (except that tasks stay checkboxes) — title pattern, properties to fill, template to start from, where the to-dos go, how days and weeks are grouped. Only where the page says nothing, fall back to the default: one child page titled like the plan (`Plano de estudo — <scope>`) with the same content as the markdown (overview, then each week and each day with its tasks as Notion to-do items) and the Notion connector's own page-format instructions. If the page's instructions conflict with what the plan needs (e.g. no room for per-day tasks), say so and ask rather than dropping content.
+    - **Confirm before creating.** Show the user the parent page, the title and the structure you will follow (and which template or properties it comes from), and wait for a yes.
+    - **Remember the page** in the plan's frontmatter as `notion_page: <url>` so the update mode (below) edits that page in place instead of creating another one. The markdown plan stays the source of truth for dates and structure; in Notion only the checkboxes are expected to change.
+    - Never delete Notion pages or change anything outside the plan's page.
+
+13. **Report**: the files written, hours per course, the mock exam dates, what didn't fit, the calendar outcome (calendar / `.ics` / none) and whether Notion got a page.
 
 ## What do I have today?
 
 Read the latest plan for the course(s), find today's heading, and answer in the chat with today's unchecked tasks (and any unchecked ones from past days). Don't write anything.
 
-## Replan
+## Update
 
-"Estou atrasado", "replaneia", or a change of exam date or availability: read the plan's checked and unchecked tasks, re-read the progress record (states may have changed since), and rebuild the plan from today to the exams with what's left — checked tasks stay as done in the past days. Show the new outline (step 8), then write it as the next version (steps 9–11).
+For "atualiza o plano", "não fiz X", "fiz mais do que estava previsto", "estou atrasado", "replaneia", or a change of exam date or availability. The user tells what happened in plain words; the plan adjusts.
+
+1. **Find the current state.** Read the latest plan for the course(s). If it has a `notion_page`, fetch that page too and merge its ticked checkboxes into what you know (a task ticked in either place is done). Re-read the progress record: states may have changed since.
+2. **Ask what changed, only for what isn't already clear.** Let the user say it freely and read it from there: tasks not done, tasks done that weren't planned (a mock exam taken early, a whole extra topic), days lost, a change in availability or exam dates. Match what they say to the plan's tasks and show the match back in one short list before changing anything ("marco como feito: …; passo para a frente: …") so a misreading is caught.
+3. **Adjust, from today to the exams:**
+   - tasks done are marked `- [x]` where they were planned, and extra work done is added to the day it happened, with its duration;
+   - work that was ahead of schedule is taken off the days it was planned for, and the freed time goes to the next weak topic or to the buffer;
+   - tasks not done are moved to the next days that have free hours (buffer first), keeping the order the plan had (past exams oldest first, mock exams under exam conditions in the final stretch); if there is no room, say what doesn't fit and propose what to cut (📎 topics already 🟢 first), as in step 5 — don't cram;
+   - past days stay as they were, with what was really done checked.
+4. **Show what changed** — a short before/after (which tasks moved where, what was cut, hours still free) — and wait for a yes.
+5. **Write the next version** of the same plan (same file, `version` and `updated` bumped, no changelog), then offer the delivery again: `.ics` and calendar (step 11 — the old events are still there, so say it), and Notion (step 12) by **updating the existing `notion_page` in place** instead of creating a new page, and asking before doing it.
 
 ## Notes
 

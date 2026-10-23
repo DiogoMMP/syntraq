@@ -27,6 +27,7 @@ availability:
 based_on:
   - "[[Exams of ENGCIA]]"
   - outputs/ENGCIA/study/progress-engcia/progress-engcia.md
+notion_page: https://www.notion.so/...   # only when the plan was put in Notion
 status: final
 ---
 
