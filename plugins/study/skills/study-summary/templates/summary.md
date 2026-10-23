@@ -6,28 +6,9 @@ lang: {{LANGUAGE}}
 toc-title: "Contents"
 version: {{VERSION}}
 updated: {{UPDATED}}
-type: summary
-scope: {{SCOPE_SLUG}}
-level: complete
-based_on:
-  - "[[Exams of {{COURSE}}]]"
-  - "[[Some topic article]]"
-  - raw/path/to/slides.pdf
-status: final
 ---
 
-# Quick map
-
-| Topic | Exams | Weight | |
-| --- | --- | --- | --- |
-| Topic A | 9/12 | 15% | 🔥 |
-| Topic B | 4/12 | 6% | ⚠️ |
-
-🔥 appears in at least half of the exams · ⚠️ in 25–50% · 📎 in fewer than 25% (from [[Exams of {{COURSE}}]]).
-
 # Topic A 🔥
-
-*Comes up in 9 of 12 exams, about 15% of the grade.*
 
 ## Concepts and definitions
 
@@ -55,18 +36,7 @@ Statement, then the solution step by step. Source: raw/… (or "example made up 
 - …
 :::
 
-## How it comes up in the exam
-
-::: {custom-style="Exam box"}
-- **N23-P3b** (20%) — one-line summary of the question.
-- **R21-P2** (10%) — …
-:::
-
 Related: Topic B, Topic C.
-
-# Self-assessment
-
-1. … (N24-P1)
 
 # Sources
 

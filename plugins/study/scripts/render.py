@@ -10,7 +10,7 @@ frontmatter may set:
     version, updated                         shown in the footer of every page, when present
     section-breaks: false                    don't start every top-level (#) section on a new page
 
-Layout: every top-level section starts on a new page; paragraphs, code blocks and the boxes are never
+Layout: every top-level section starts on a new page; tables (centred, full grid, coloured header, alternating row colours), figures and captions are centred; paragraphs, code blocks and the boxes are never
 cut across pages; a table that fits on a page is kept whole (a longer one breaks only between rows and
 repeats its header row). "Fits" means at most 12 rows and about 1200 characters.
 
@@ -18,22 +18,31 @@ Wiki links ([[Article]] / [[Article|text]]) are turned into plain text, since th
 nothing outside Obsidian. The band and state emoji (🔥 ⚠️ 📎 🔴 🟡 🟢 ⚪) are swapped for plain symbols
 in the Word/PDF only: a single emoji makes Word embed the whole emoji font (~4 MB per PDF).
 
+Diagrams: a fenced block ```mermaid (optionally followed by a caption on the same line, e.g.
+```mermaid Bayes network) is rendered to a PNG with mermaid-cli (`mmdc`) and put in the document as a
+figure. Images (`![caption](figuras/x.png){width=80%}`) are embedded as they are.
+
 Exit codes: 0 ok (the PDF may still be skipped — see the last line printed), 2 bad input,
-3 pandoc not installed, 4 pandoc failed.
+3 pandoc not installed, 4 pandoc failed, 5 the source has mermaid diagrams and mmdc is not installed,
+6 mmdc could not render a diagram (or took more than two minutes on one).
 """
 
 import argparse
+import json
 import os
 import platform
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_TAB_ALIGNMENT
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
+from docx.shared import RGBColor
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
@@ -46,6 +55,7 @@ EMOJI = {"🔥": "●●●", "⚠️": "●●○", "⚠": "●●○", "📎":
 
 
 def swap_emoji(text):
+    """Swap the band and state emoji for plain symbols, in the Word/PDF only."""
     for emoji, symbol in EMOJI.items():
         text = text.replace(emoji, symbol)
     return text
@@ -109,6 +119,7 @@ def read_frontmatter(text):
 
 
 def strip_wikilinks(text):
+    """Turn [[Article]] and [[Article|text]] into plain text."""
     return WIKILINK.sub(lambda m: m.group(2) or m.group(1).split("/")[-1], text)
 
 
@@ -120,9 +131,71 @@ def highlight_flag(pandoc):
     return "--syntax-highlighting=tango" if version >= (3, 8) else "--highlight-style=tango"
 
 
+MERMAID_TIMEOUT = 120  # seconds per diagram; a hung mmdc must not block the summary
+MERMAID = re.compile(r"^```mermaid[ \t]*(.*?)[ \t]*\r?\n(.*?)^```[ \t]*$", re.S | re.M)
+
+
+def diagram_width(png):
+    """Width, in % of the text block, for a diagram. A narrow diagram is enlarged (text up to about 12 pt) to
+    fill most of the page width instead of sitting in a thin column; a wide one is kept at 9.5 pt or more, even
+    if that makes it wider than the page's comfortable share (at most 100%); and none is taller than ~420 pt."""
+    with open(png, "rb") as handle:
+        header = handle.read(24)
+    width, height = struct.unpack(">II", header[16:24])  # rendered at scale 2
+    native_w, native_h = width / 2, height / 2
+    fill = 0.9 * 453 / native_w  # scale that would fill 90% of the text block (about 453 pt, 16 cm)
+    scale = min(12 / 16, max(9.5 / 16, fill))  # pt per native pixel for a 16 px font
+    width_pt, height_pt = native_w * scale, native_h * scale
+    if height_pt > 420:
+        width_pt *= 420 / height_pt
+    return int(max(20, min(100, width_pt / 453 * 100)))
+
+
+def render_mermaid(text, tmp):
+    """Replace every ```mermaid block with an image rendered by mermaid-cli (mmdc)."""
+    if not MERMAID.search(text):
+        return text
+    mmdc = shutil.which("mmdc")
+    if not mmdc:
+        sys.stderr.write("the source has mermaid diagrams but mmdc (mermaid-cli) is not installed\n")
+        sys.exit(5)
+    counter = [0]
+    config = Path(tmp) / "mermaid-config.json"
+    # natural size, not shrunk to the viewport: the figure's own width then tells how legible it is
+    config.write_text(
+        json.dumps({"flowchart": {"useMaxWidth": False}, "sequence": {"useMaxWidth": False}}), encoding="utf-8"
+    )
+
+    def one(match):
+        """Render one Mermaid block to a PNG and return the markdown image that replaces it."""
+        counter[0] += 1
+        mmd = Path(tmp) / f"diagram-{counter[0]}.mmd"
+        png = Path(tmp) / f"diagram-{counter[0]}.png"
+        mmd.write_text(match.group(2), encoding="utf-8")
+        try:
+            result = subprocess.run(
+                [mmdc, "-i", str(mmd), "-o", str(png), "-c", str(config), "-s", "2", "-b", "white"],
+                capture_output=True,
+                text=True,
+                timeout=MERMAID_TIMEOUT,
+            )
+        except subprocess.TimeoutExpired:
+            sys.stderr.write(f"mmdc did not finish diagram {counter[0]} within {MERMAID_TIMEOUT} seconds\n")
+            sys.exit(6)
+        if result.returncode != 0 or not png.is_file():
+            sys.stderr.write(f"mmdc failed on diagram {counter[0]}:\n{result.stderr or result.stdout}\n")
+            sys.exit(6)
+        caption = match.group(1).replace("]", ")").replace("[", "(")
+        return f"![{caption}]({png.as_posix()}){{width={diagram_width(png)}%}}"
+
+    return MERMAID.sub(one, text)
+
+
 def run_pandoc(pandoc, source, docx_path, reference, toc):
+    """Render the markdown source (Mermaid diagrams first) to a .docx with pandoc; exit 4 if pandoc fails."""
     text = swap_emoji(strip_wikilinks(source.read_text(encoding="utf-8")))
     with tempfile.TemporaryDirectory() as tmp:
+        text = render_mermaid(text, tmp)
         prepared = Path(tmp) / source.name
         prepared.write_text(text, encoding="utf-8")
         box_filter = Path(tmp) / "box-lists.lua"
@@ -150,6 +223,7 @@ def run_pandoc(pandoc, source, docx_path, reference, toc):
 
 
 def add_field(paragraph, instruction):
+    """Append a Word field (page number, total pages…) to a paragraph."""
     run = paragraph.add_run()
     for kind, text in (("begin", None), (None, instruction), ("separate", None), ("end", None)):
         if kind:
@@ -185,6 +259,7 @@ def add_footer(docx_path, meta, fallback_title):
 
 
 BOX_STYLES = ("Exam box", "Warning box", "Example box", "Note box")
+FIGURE_CAPTION_STYLES = ("Image Caption", "Figure Caption", "Captioned Figure Caption", "Caption")
 # A table is kept whole on one page only when it is clearly small: few rows and little text. Word cannot
 # honour keep-with-next across a table taller than a page and would just push it down, wasting space.
 MAX_KEPT_TABLE_ROWS = 12
@@ -203,11 +278,52 @@ def add_row_flag(row, tag):
         tr_pr.append(OxmlElement(tag))
 
 
+TABLE_BORDER = "8FA3BF"   # thin grid lines between every row and column
+TABLE_HEADER_FILL = "1F3A5F"  # header row: dark blue, white bold text
+TABLE_ROW_FILLS = ("EAF0F8", "FFFFFF")  # body rows alternate: light blue, white
+
+
+def style_table(table):
+    """Full grid, a coloured header row and body rows in alternating colours."""
+    tbl_pr = table._tbl.tblPr
+    old = tbl_pr.find(qn("w:tblBorders"))
+    if old is not None:
+        tbl_pr.remove(old)
+    borders = OxmlElement("w:tblBorders")
+    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        element = OxmlElement(f"w:{edge}")
+        element.set(qn("w:val"), "single")
+        element.set(qn("w:sz"), "4")
+        element.set(qn("w:space"), "0")
+        element.set(qn("w:color"), TABLE_BORDER)
+        borders.append(element)
+    tbl_pr.append(borders)
+    for index, row in enumerate(table.rows):
+        fill = TABLE_HEADER_FILL if index == 0 else TABLE_ROW_FILLS[(index - 1) % 2]
+        for cell in row.cells:
+            tc_pr = cell._tc.get_or_add_tcPr()
+            old = tc_pr.find(qn("w:shd"))
+            if old is not None:
+                tc_pr.remove(old)
+            shade = OxmlElement("w:shd")
+            shade.set(qn("w:val"), "clear")
+            shade.set(qn("w:color"), "auto")
+            shade.set(qn("w:fill"), fill)
+            tc_pr.append(shade)
+            if index == 0:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.font.bold = True
+                        run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+
+
 def tidy_layout(docx_path, section_breaks):
     """Keep tables and boxes from being cut, and start each top-level section on a new page."""
     doc = Document(str(docx_path))
 
     for table in doc.tables:
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        style_table(table)
         rows = table.rows
         for row in rows:
             add_row_flag(row, "w:cantSplit")
@@ -219,6 +335,15 @@ def tidy_layout(docx_path, section_breaks):
                 for cell in row.cells:
                     for paragraph in cell.paragraphs:
                         set_keep_with_next(paragraph)
+
+    # Figures (images, charts, diagrams) and their captions are centred, and a figure stays with its caption.
+    for paragraph in doc.paragraphs:
+        style = paragraph.style.name if paragraph.style is not None else ""
+        if paragraph._p.xpath(".//w:drawing"):
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            set_keep_with_next(paragraph)
+        elif style in FIGURE_CAPTION_STYLES:
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     # A box made of several paragraphs stays in one piece.
     paragraphs = doc.paragraphs
@@ -290,6 +415,7 @@ def make_pdf(docx_path, pdf_path):
 
 
 def main():
+    """Parse the arguments, render the .docx, tidy its layout and make the PDF."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("source", type=Path)
     parser.add_argument("--no-pdf", action="store_true")
