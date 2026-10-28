@@ -22,7 +22,7 @@ Turns whatever's pending — external sources or your own notes/commits — into
 
 a. Read `wiki/sources.md` if it exists — a manifest of every raw source, a one-line summary, which wiki article(s) cover it, and when it was last compiled. Create it (with a header row) if it doesn't exist yet.
 
-b. List every file under `raw/` recursively (skip its `README.md`). A source is *pending* if it has no entry in `wiki/sources.md`, or if its mtime is newer than the "last compiled" date recorded there. If nothing is pending here and step (d) finds no pending notes either, skip ahead to the Deletions check; if that finds nothing too, say so and stop.
+b. List every file under `raw/` recursively (skip its `README.md`). **Source code is reference, not a source:** in research mode, code that happens to sit in `raw/` (a cloned repo, scripts, a project folder) is there to be consulted, so it is never compiled into the wiki and never goes in `wiki/sources.md` — no article describing what the code does, no per-file rows, so it never counts as pending. Tell code from material by path, name and content (a `.py` shipped as a course exercise solution is material; a vendored repo is code), and ask when it's unclear. The exception is code that *is* the material of a concept (a snippet in the slides, a worked example): it may be quoted or linked from the article about that concept, as an illustration. A source is *pending* if it has no entry in `wiki/sources.md`, or if its mtime is newer than the "last compiled" date recorded there. If nothing is pending here and step (d) finds no pending notes either, skip ahead to the Deletions check; if that finds nothing too, say so and stop.
 
 c. For each pending source:
    - Read it in full. For very large files, read enough to summarize accurately and note in `wiki/sources.md` that it was only partially read.
@@ -109,6 +109,7 @@ e. **Code mode extra:** `wiki/Estrutura.md` is regenerated every run so it alrea
 - Write every article without hard line breaks: one paragraph, list item or table row per line, however long — Obsidian wraps lines. Breaks only between blocks and inside code blocks.
 - Safe to re-run any time — only what's pending (or deleted) gets touched. Deletions are never applied without showing the affected articles and getting a yes first.
 - No RAG/vector DB needed at small-to-medium scale: the index files plus direct reads of relevant articles are enough context to work from.
+- Research mode: code in `raw/` is consulted, never compiled (see step b). Code mode is the opposite — the repo's own code is what the wiki documents.
 - Never edit files inside `raw/` (research mode) — it's the append-only source of truth. In both modes, never rewrite a note's body — only its frontmatter, and move it to its archive folder once compiled.
 - The wiki is the single source of truth. Never replace an article's content with a pointer to something in `outputs/` ("the analysis is in outputs/…") — if it's knowledge, it goes in the article. Outputs may link to the wiki, not stand in for it.
 - Never assume a research-mode KB is a git repository: nothing in research mode reads or writes git. Only code mode walks git history, because it lives inside a code repo.

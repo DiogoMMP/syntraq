@@ -26,6 +26,7 @@ tools/                    scripts that operate on raw/ and wiki/
 ```
 
 - `raw/` — source material (slides, PDFs, books, exams, articles, repos, datasets, images). **It has no rules**: whatever folders and file names it already has are the structure. Never edited by the LLM, never reorganised, never required to follow a convention — skills discover what each file is from its path, name and content, and ask when it's unclear.
+- **Code in `raw/` is for consulting, not compiling.** If the folder contains source code (a cloned repo, scripts, a project), the LLM reads it to answer questions or check a detail, but `compile-wiki` does not turn it into wiki articles or list it in `wiki/sources.md`. Code that illustrates a concept (a snippet from the slides, a worked example) may be quoted from the article about that concept.
 - `notes/` — your own material and what other people tell you, one file per note (see `notes/README.md`). Pending notes sit loose at the top of `notes/`; once `compile-wiki` folds one into the wiki it moves it to `notes/<area>/`, so what is still pending is visible at a glance.
 - `wiki/` — the compiled knowledge base: `.md` files with backlinks, organised by area and concept. LLM-maintained; humans mostly just read it (e.g. in Obsidian).
 - `outputs/` — artifacts generated from the KB for a purpose (see `outputs/README.md`), in the same areas as `wiki/`, split by what they are for.
