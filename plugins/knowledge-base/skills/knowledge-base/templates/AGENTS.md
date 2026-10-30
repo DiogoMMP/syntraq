@@ -6,7 +6,7 @@ This directory is a knowledge base. Before answering anything about {{TOPIC}}, u
 ### How to look things up
 
 1. **Start with the wiki.** Read `wiki/index.md`, then the articles it points to that are relevant. The wiki is the compiled, cross-linked view of the sources — it's the default place to answer from.
-2. **Go to `raw/` only when the wiki isn't enough**: you need the exact wording, a figure, a table, an image, or detail the wiki summarised away. Use `wiki/sources.md` to find which raw file backs an article. Never edit anything in `raw/`.
+2. **Go to `raw/` only when the wiki isn't enough**: you need the exact wording, a figure, a table, an image, or detail the wiki summarised away. Use `wiki/sources.md` to find which raw file backs an article. Never edit anything in `raw/`. If it contains source code, that code is for consulting only: read it to answer or verify, but don't compile it into the wiki.
 3. `notes/` holds the author's own thoughts and decisions, AI answers they saved, and messages from other people (`kind: message`, with `from:`). None of them is a source: thoughts are the author's view, messages are attributed to whoever wrote them, and AI-authored notes are unverified.
 
 ### Don't invent
